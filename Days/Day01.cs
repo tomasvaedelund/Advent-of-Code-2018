@@ -43,17 +43,17 @@ namespace Advent_of_Code_2018.Days
         {
             var dataArray = data.ToIntArray(splitter);
             var steps = new HashSet<int>() { 0 };
-            var recurenceNotFound = true;
+            var recurrenceFound = false;
             var result = 0;
 
-            while (recurenceNotFound)
+            while (!recurrenceFound)
             {
-                result = dataArray.TakeWhile(_ => recurenceNotFound).Aggregate(result, (curr, next) =>
+                result = dataArray.TakeWhile(_ => !recurrenceFound).Aggregate(result, (curr, next) =>
                 {
                     result = curr + next;
                     if (!steps.Add(result))
                     {
-                        recurenceNotFound = false;
+                        recurrenceFound = true;
                     }
                     return result;
                 });
