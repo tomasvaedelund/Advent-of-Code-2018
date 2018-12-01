@@ -1,4 +1,5 @@
 ﻿using System;
+using Advent_of_Code_2018.Days;
 
 namespace Advent_of_Code_2018
 {
@@ -6,7 +7,7 @@ namespace Advent_of_Code_2018
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Day01.GetResult();
         }
     }
 }
