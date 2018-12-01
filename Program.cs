@@ -7,7 +7,8 @@ namespace Advent_of_Code_2018
     {
         static void Main(string[] args)
         {
-            Day01.GetResult();
+            //Day01.GetResult();
+            Day02.GetResult();
         }
     }
 }

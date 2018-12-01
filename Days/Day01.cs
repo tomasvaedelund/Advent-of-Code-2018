@@ -9,6 +9,7 @@ namespace Advent_of_Code_2018.Days
     {
         public static void GetResult()
         {
+            // First star
             Debug.Assert(CalibrateDevice("+1, +1, +1", ",") == 3);
             Debug.Assert(CalibrateDevice("+1, +1, -2", ",") == 0);
             Debug.Assert(CalibrateDevice("-1, -2, -3", ",") == -6);
@@ -17,9 +18,9 @@ namespace Advent_of_Code_2018.Days
             var result = "";
             var stopWatch = Stopwatch.StartNew();
             result = CalibrateDevice(data).ToString();
-            Debug.Assert(result == "420");
             Helpers.DisplayDailyResult("01 - 1", result, stopWatch.ElapsedMilliseconds);
 
+            // Second star
             Debug.Assert(FindFirstRecurranceOfFrequency("+1, -1", ",") == 0);
             Debug.Assert(FindFirstRecurranceOfFrequency("+3, +3, +4, -2, -4", ",") == 10);
             Debug.Assert(FindFirstRecurranceOfFrequency("-6, +3, +8, +5, -6", ",") == 5);
@@ -27,7 +28,6 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = FindFirstRecurranceOfFrequency(data).ToString();
-            Debug.Assert(result == "227");
             Helpers.DisplayDailyResult("01 - 2", result, stopWatch.ElapsedMilliseconds);
             stopWatch.Stop();
         }

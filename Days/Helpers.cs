@@ -6,11 +6,6 @@ namespace Advent_of_Code_2018.Days
 {
     public static class Helpers
     {
-        public static int[] StringToIntArray(string data)
-        {
-            return data.Select(c => (int)(c - '0')).ToArray();
-        }
-
         public static string GetDataFromFile(string fileName)
         {
             var contents = "";
@@ -32,9 +27,14 @@ namespace Advent_of_Code_2018.Days
             Console.WriteLine($"Day {day}: {result} - in {timeElapsed}ms");
         }
 
+        public static int[] StringToIntArray(this string data)
+        {
+            return data.Select(c => (int)(c - '0')).ToArray();
+        }
+
         public static int[] ToIntArray(this string data, string splitter = "\r\n")
         {
-            return data.Split(splitter).Select(x => Convert.ToInt32(x)).ToArray();
+            return data.Split(splitter).Select(Int32.Parse).ToArray();
         }
     }
 }
