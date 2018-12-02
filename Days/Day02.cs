@@ -19,10 +19,10 @@ namespace Advent_of_Code_2018.Days
             Helpers.DisplayDailyResult("02 - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
-            Debug.Assert(true == true);
+            Debug.Assert(GetSimilarBoxes("abcde, fghij, klmno, pqrst, fguij, axcye, wvxyz", ",") == "fgij");
 
             stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
+            result = GetSimilarBoxes(data);
             Helpers.DisplayDailyResult("02 - 2", result, stopWatch.ElapsedMilliseconds);
             stopWatch.Stop();
         }
@@ -45,6 +45,32 @@ namespace Advent_of_Code_2018.Days
             }
 
             return counter.Where(c => c > 0).Aggregate((c, n) => c * n);
+        }
+
+        private static string GetSimilarBoxes(string data, string splitter = "\r\n")
+        {
+            var result = "";
+            var dataArray = data.Split(splitter);
+            var itemLength = dataArray.First().Length;
+
+            for (int i = 0; i < itemLength; i++)
+            {
+                var tempArray = dataArray.Select(c => c.Remove(i, 1));
+                var tempResult = tempArray
+                    .GroupBy(x => x)
+                    .Select(x => new { ID = x, Count = x.Count() })
+                    .Where(x => x.Count > 1)
+                    .Select(x => x.ID)
+                    .FirstOrDefault();
+
+                if (tempResult != null)
+                {
+                    result = tempResult.Distinct().Single().Trim();
+                    break;
+                }
+            }
+
+            return result;
         }
     }
 }
