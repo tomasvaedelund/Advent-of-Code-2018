@@ -55,7 +55,13 @@ namespace Advent_of_Code_2018.Days
 
             for (int i = 0; i < itemLength; i++)
             {
+                // We know that only one char should be different
+                // We know that there will be only one result
+
+                // Remove char at pos i for all elements in array
                 var tempArray = dataArray.Select(c => c.Remove(i, 1));
+
+                // Find any matchning boxes (with char at pos i removed)
                 var tempResult = tempArray
                     .GroupBy(x => x)
                     .Select(x => new { ID = x, Count = x.Count() })
@@ -63,6 +69,7 @@ namespace Advent_of_Code_2018.Days
                     .Select(x => x.ID)
                     .FirstOrDefault();
 
+                // If we have a result then bingo!
                 if (tempResult != null)
                 {
                     result = tempResult.Distinct().Single().Trim();
