@@ -39,9 +39,9 @@ namespace Advent_of_Code_2018.Days
         {
             var sheetSize = 1000;
             var sheet = new int[sheetSize, sheetSize];
-            var claims = data.Split(splitter).Select(x => new Claim(x));
+            var claims = data.Split(splitter).Select(x => new Claim(x)).ToList();
 
-            foreach (var claim in claims)
+            claims.ForEach(claim =>
             {
                 for (int y = claim.Top; y < claim.Top + claim.Height; y++)
                 {
@@ -50,7 +50,7 @@ namespace Advent_of_Code_2018.Days
                         sheet[y, x]++;
                     }
                 }
-            }
+            });
 
             return sheet.Cast<int>().Count(x => x > 1);
         }
@@ -92,13 +92,13 @@ namespace Advent_of_Code_2018.Days
 
         public Claim(string claim)
         {
-            var claimArray = claim.Trim().Split(new string[] { "#", "@", ",", ":", "x" }, StringSplitOptions.RemoveEmptyEntries);
+            var claimArray = claim.Trim().Split(new string[] { "#", " @ ", ",", ": ", "x" }, StringSplitOptions.RemoveEmptyEntries);
 
-            ID = Int32.Parse(claimArray[0].Trim());
-            Left = Int32.Parse(claimArray[1].Trim());
-            Top = Int32.Parse(claimArray[2].Trim());
-            Width = Int32.Parse(claimArray[3].Trim());
-            Height = Int32.Parse(claimArray[4].Trim());
+            ID = Int32.Parse(claimArray[0]);
+            Left = Int32.Parse(claimArray[1]);
+            Top = Int32.Parse(claimArray[2]);
+            Width = Int32.Parse(claimArray[3]);
+            Height = Int32.Parse(claimArray[4]);
         }
     }
 }
