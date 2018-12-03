@@ -8,6 +8,6 @@ Day 02 - 1 Execution time: 1ms
 
 Day 02 - 2 Execution time: 1ms
 
-Day 03 - 1 Execution time: ?ms
+Day 03 - 1 Execution time: 120ms
 
-Day 03 - 2 Execution time: ?ms
+Day 03 - 2 Execution time: 1431ms
