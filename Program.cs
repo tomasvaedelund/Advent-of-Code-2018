@@ -9,7 +9,8 @@ namespace Advent_of_Code_2018
         {
             // Day01.GetResult();
             // Day02.GetResult();
-            Day03.GetResult();
+            // Day03.GetResult();
+            Day04.GetResult();
         }
     }
 }

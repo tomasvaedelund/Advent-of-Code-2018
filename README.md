@@ -1,13 +1,29 @@
 # Advent-of-Code-2018
 
-Day 01 - 1 Execution time: 0ms
-
-Day 01 - 2 Execution time: 11ms
-
-Day 02 - 1 Execution time: 1ms
-
-Day 02 - 2 Execution time: 1ms
-
-Day 03 - 1 Execution time: 120ms
-
-Day 03 - 2 Execution time: 1431ms
+| Day | Time#1 | Time#2 |
+|-----|-------:|-------:|
+| 01  | 0ms | 11ms |
+| 02  | 1ms | 1ms |
+| 03  | 120ms | 1431ms |
+| 04  | ?ms | ?ms |
+| 05  | ?ms | ?ms |
+| 06  | ?ms | ?ms |
+| 07  | ?ms | ?ms |
+| 08  | ?ms | ?ms |
+| 09  | ?ms | ?ms |
+| 10  | ?ms | ?ms |
+| 11  | ?ms | ?ms |
+| 12  | ?ms | ?ms |
+| 13  | ?ms | ?ms |
+| 14  | ?ms | ?ms |
+| 15  | ?ms | ?ms |
+| 16  | ?ms | ?ms |
+| 17  | ?ms | ?ms |
+| 18  | ?ms | ?ms |
+| 19  | ?ms | ?ms |
+| 20  | ?ms | ?ms |
+| 21  | ?ms | ?ms |
+| 22  | ?ms | ?ms |
+| 23  | ?ms | ?ms |
+| 24  | ?ms | ?ms |
+| 25  | ?ms | ?ms |
