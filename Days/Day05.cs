@@ -19,10 +19,10 @@ namespace Advent_of_Code_2018.Days
             var stopWatch = new Stopwatch();
 
             // First star
-            Debug.Assert(true == true);
+            Debug.Assert(GetFullyReactingUnits("dabAcCaCBAcCcaDA") == 10);
 
             stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
+            result = GetFullyReactingUnits(data).ToString();
             Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
@@ -34,6 +34,31 @@ namespace Advent_of_Code_2018.Days
 
             // End
             stopWatch.Stop();
+        }
+
+        private static bool DoesUnitsReact(int unitOne, int unitTwo)
+        {
+            return unitOne == unitTwo + 32 || unitOne + 32 == unitTwo;
+        }
+        private static int GetFullyReactingUnits(string data)
+        {
+            var dataArray = data.StringToIntArray().ToList();
+            var shouldLoop = true;
+
+            while (shouldLoop)
+            {
+                shouldLoop = false;
+                for (int i = 0; i < dataArray.Count - 1; i++)
+                {
+                    if (DoesUnitsReact(dataArray.ElementAt(i), dataArray.ElementAt(i + 1)))
+                    {
+                        dataArray.RemoveRange(i, 2);
+                        shouldLoop = true;
+                    }
+                }
+            }
+
+            return dataArray.Count();
         }
     }
 }
