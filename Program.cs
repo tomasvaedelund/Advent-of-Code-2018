@@ -11,7 +11,8 @@ namespace Advent_of_Code_2018
             // Day02.GetResult();
             // Day03.GetResult();
             // Day04.GetResult();
-            Day05.GetResult();
+            // Day05.GetResult();
+            Day06.GetResult();
         }
     }
 }
