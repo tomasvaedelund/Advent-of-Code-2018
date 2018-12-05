@@ -26,10 +26,10 @@ namespace Advent_of_Code_2018.Days
             Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
-            Debug.Assert(true == true);
+            Debug.Assert(GetLengthOfShortestPolymer("dabAcCaCBAcCcaDA") == 4);
 
             stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
+            result = GetLengthOfShortestPolymer(data).ToString();
             Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
@@ -40,25 +40,50 @@ namespace Advent_of_Code_2018.Days
         {
             return unitOne == unitTwo + 32 || unitOne + 32 == unitTwo;
         }
+
         private static int GetFullyReactingUnits(string data)
         {
             var dataArray = data.StringToIntArray().ToList();
+            return GetFullyReactingUnits(dataArray);
+        }
+
+        private static int GetFullyReactingUnits(List<int> data)
+        {
             var shouldLoop = true;
 
             while (shouldLoop)
             {
                 shouldLoop = false;
-                for (int i = 0; i < dataArray.Count - 1; i++)
+                for (int i = 0; i < data.Count - 1; i++)
                 {
-                    if (DoesUnitsReact(dataArray.ElementAt(i), dataArray.ElementAt(i + 1)))
+                    if (DoesUnitsReact(data.ElementAt(i), data.ElementAt(i + 1)))
                     {
-                        dataArray.RemoveRange(i, 2);
+                        data.RemoveRange(i, 2);
                         shouldLoop = true;
                     }
                 }
             }
 
-            return dataArray.Count();
+            return data.Count();
+        }
+
+        private static int GetLengthOfShortestPolymer(string data)
+        {
+            var dataArray = data.StringToIntArray().ToList();
+
+            var currIndex = 17;
+            var stopIndex = 42;
+            var result = int.MaxValue;
+
+            while (currIndex <= stopIndex)
+            {
+                var tempArray = dataArray.Where(x => x != currIndex && x != currIndex + 32).ToList();
+                var tempResult = GetFullyReactingUnits(tempArray);
+                result = (tempResult < result) ? tempResult : result;
+                currIndex++;
+            }
+
+            return result;
         }
     }
 }
