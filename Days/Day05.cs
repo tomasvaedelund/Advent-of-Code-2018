@@ -49,19 +49,17 @@ namespace Advent_of_Code_2018.Days
 
         private static int GetFullyReactingUnits(List<int> data)
         {
-            var shouldLoop = true;
+            var index = 0;
 
-            while (shouldLoop)
+            while (index < data.Count - 1)
             {
-                shouldLoop = false;
-                for (int i = 0; i < data.Count - 1; i++)
+                if (DoesUnitsReact(data.ElementAt(index), data.ElementAt(index + 1)))
                 {
-                    if (DoesUnitsReact(data.ElementAt(i), data.ElementAt(i + 1)))
-                    {
-                        data.RemoveRange(i, 2);
-                        shouldLoop = true;
-                    }
+                    data.RemoveRange(index, 2);
+                    index = (index > 2) ? index -= 2 : index -= 1;
                 }
+
+                index++;
             }
 
             return data.Count();
