@@ -44,10 +44,10 @@ namespace Advent_of_Code_2018.Days
         private static int GetFullyReactingUnits(string data)
         {
             var dataArray = data.StringToIntArray().ToList();
-            return GetFullyReactingUnits(dataArray);
+            return GetFullyReactingUnits(dataArray).Count();
         }
 
-        private static int GetFullyReactingUnits(List<int> data)
+        private static List<int> GetFullyReactingUnits(List<int> data)
         {
             var index = 0;
 
@@ -62,12 +62,12 @@ namespace Advent_of_Code_2018.Days
                 index++;
             }
 
-            return data.Count();
+            return data;
         }
 
         private static int GetLengthOfShortestPolymer(string data)
         {
-            var dataArray = data.StringToIntArray().ToList();
+            var dataArray = GetFullyReactingUnits(data.StringToIntArray().ToList());
 
             var currIndex = 17;
             var stopIndex = 42;
@@ -76,7 +76,7 @@ namespace Advent_of_Code_2018.Days
             while (currIndex <= stopIndex)
             {
                 var tempArray = dataArray.Where(x => x != currIndex && x != currIndex + 32).ToList();
-                var tempResult = GetFullyReactingUnits(tempArray);
+                var tempResult = GetFullyReactingUnits(tempArray).Count;
                 result = (tempResult < result) ? tempResult : result;
                 currIndex++;
             }
