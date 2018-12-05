@@ -56,10 +56,12 @@ namespace Advent_of_Code_2018.Days
                 if (DoesUnitsReact(data.ElementAt(index), data.ElementAt(index + 1)))
                 {
                     data.RemoveRange(index, 2);
-                    index = (index > 2) ? index -= 2 : index -= 1;
+                    index = (index == 0) ? index : index -= 1;
                 }
-
-                index++;
+                else
+                {
+                    index++;
+                }
             }
 
             return data;
