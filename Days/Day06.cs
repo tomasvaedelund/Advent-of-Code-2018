@@ -39,8 +39,7 @@ namespace Advent_of_Code_2018.Days
 
         private static int GetPartTwo(string data, int maxTotalDistance)
         {
-            var id = 1;
-            var points = data.Split("\r\n").Select(p => new Point(p, id++)).ToHashSet();
+            var points = data.Split("\r\n").Select(p => new Point(p)).ToHashSet();
 
             var maxX = points.Max(p => p.X) + 1;
             var maxY = points.Max(p => p.Y) + 1;
@@ -77,69 +76,38 @@ namespace Advent_of_Code_2018.Days
 
         private static int GetLargestArea(string data)
         {
-            var id = 1;
-            var points = data.Split("\r\n").Select(p => new Point(p, id++)).ToHashSet();
+            var points = data.Split("\r\n").Select(p => new Point(p)).ToHashSet();
 
-            var maxX = points.Max(p => p.X) + 1;
-            var maxY = points.Max(p => p.Y) + 1;
+            var maxX = points.Max(p => p.X);
+            var maxY = points.Max(p => p.Y);
+            var minX = points.Min(p => p.X);
+            var minY = points.Min(p => p.Y);
 
-            var dataTable = new int[maxX, maxY];
-
-            for (int x = 0; x < maxX; x++)
+            for (int x = minX; x <= maxX; x++)
             {
-                for (int y = 0; y < maxY; y++)
+                for (int y = minY; y <= maxY; y++)
                 {
-                    var closestPoint = GetIdOfClosestPoint(x, y, points);
-                    dataTable[x, y] = closestPoint;
+                    var closestPoints = GetClosestPoints(x, y, points);
+                    if (closestPoints.Count() == 1)
+                    {
+                        closestPoints.Single().Area++;
+                        if (x == minX || y == minY || x == maxX || y == maxY)
+                        {
+                            closestPoints.Single().IsInfinite = true;
+                        }
+                    }
                 }
             }
 
-            var infiniteIds = GetInfiniteIds(dataTable);
+            var result = points
+                .Where(p => p.IsInfinite == false)
+                .OrderByDescending(p => p.Area)
+                .First();
 
-            var result = dataTable
-            .Cast<int>()
-            .Where(x => x > 0 && x < int.MaxValue && !infiniteIds.Contains(x))
-            .GroupBy(x => x)
-            .Select(x => new { p = x.Key, c = x.Count() })
-            .OrderByDescending(x => x.c);
-
-            return result.First().c;
+            return result.Area;
         }
 
-        private static IEnumerable<int> GetInfiniteIds(int[,] dataTable)
-        {
-            var height = dataTable.GetLength(0) - 1;
-            var width = dataTable.GetLength(1) - 1;
-
-            var left = GetColumn(dataTable, 0);
-            var right = GetColumn(dataTable, height);
-            var top = GetRow(dataTable, 0);
-            var bottom = GetRow(dataTable, width);
-
-            var result = left
-                .Union(right)
-                .Union(top)
-                .Union(bottom)
-                .Where(p => p > 0 && p < int.MaxValue)
-                .Distinct();
-
-            return result;
-        }
-
-        private static int[] GetRow(int[,] matrix, int colNum)
-        {
-            return Enumerable.Range(0, matrix.GetLength(0))
-                .Select(x => matrix[x, colNum])
-                .ToArray();
-        }
-
-        private static int[] GetColumn(int[,] matrix, int rowNum)
-        {
-            return Enumerable.Range(0, matrix.GetLength(1))
-                    .Select(x => matrix[rowNum, x])
-                    .ToArray();
-        }
-        private static int GetIdOfClosestPoint(int x, int y, IEnumerable<Point> points)
+        private static IEnumerable<Point> GetClosestPoints(int x, int y, IEnumerable<Point> points)
         {
             var test = new Dictionary<Point, int>();
 
@@ -152,7 +120,7 @@ namespace Advent_of_Code_2018.Days
             var minDistance = test.Min(p2 => p2.Value);
             var closestPoints = test.Where(p => p.Value == minDistance);
 
-            return (closestPoints.Count() == 1) ? closestPoints.Single().Key.Id : int.MaxValue;
+            return closestPoints.Select(p => p.Key);
         }
 
         private static int GetDistance(int x, int y, Point p)
@@ -166,12 +134,13 @@ namespace Advent_of_Code_2018.Days
 
     class Point
     {
-        public int Id { get; set; }
+        public int Area { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public Point(string point, int id)
+        public bool IsInfinite { get; set; }
+
+        public Point(string point)
         {
-            Id = id;
             X = int.Parse(point.Split(", ")[0]);
             Y = int.Parse(point.Split(", ")[1]);
         }
