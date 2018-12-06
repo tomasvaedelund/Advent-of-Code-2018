@@ -27,14 +27,52 @@ namespace Advent_of_Code_2018.Days
             Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
-            Debug.Assert(true == true);
+            Debug.Assert(GetPartTwo(testData, 32) == 16);
 
             stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
+            result = GetPartTwo(data, 10000).ToString();
             Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();
+        }
+
+        private static int GetPartTwo(string data, int maxTotalDistance)
+        {
+            var id = 1;
+            var points = data.Split("\r\n").Select(p => new Point(p, id++)).ToHashSet();
+
+            var maxX = points.Max(p => p.X) + 1;
+            var maxY = points.Max(p => p.Y) + 1;
+
+            var dataTable = new int[maxX, maxY];
+
+            for (int x = 0; x < maxX; x++)
+            {
+                for (int y = 0; y < maxY; y++)
+                {
+                    var totalDistance = GetDistanceToAllPoints(x, y, points);
+                    dataTable[x, y] = totalDistance;
+                }
+            }
+
+            var result = dataTable
+            .Cast<int>()
+            .Where(x => x < maxTotalDistance)
+            .Count();
+
+            return result;
+        }
+
+        private static int GetDistanceToAllPoints(int x, int y, HashSet<Point> points)
+        {
+            var distance = 0;
+            foreach (var point in points)
+            {
+                distance += GetDistance(x, y, point);
+            }
+
+            return distance;
         }
 
         private static int GetLargestArea(string data)
@@ -47,15 +85,12 @@ namespace Advent_of_Code_2018.Days
 
             var dataTable = new int[maxX, maxY];
 
-            foreach (var point in points)
+            for (int x = 0; x < maxX; x++)
             {
-                for (int x = 0; x < maxX; x++)
+                for (int y = 0; y < maxY; y++)
                 {
-                    for (int y = 0; y < maxY; y++)
-                    {
-                        var closestPoint = GetIdOfClosestPoint(x, y, points);
-                        dataTable[x, y] = closestPoint;
-                    }
+                    var closestPoint = GetIdOfClosestPoint(x, y, points);
+                    dataTable[x, y] = closestPoint;
                 }
             }
 
