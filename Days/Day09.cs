@@ -34,47 +34,72 @@ namespace Advent_of_Code_2018.Days
             // Second star
             // Debug.Assert(Solve2(testData, 0, 2) == 15);
 
-            // stopWatch = Stopwatch.StartNew();
-            // result = Solve2(data, 60, 5).ToString();
-            // Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
+            stopWatch = Stopwatch.StartNew();
+            result = Solve2(data).ToString();
+            Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();
         }
 
-        private static int Solve1(string data)
+        private static LinkedListNode<int> Rotate(this LinkedList<int> list, LinkedListNode<int> current, int count)
+        {
+            if (count > 0)
+            {
+                while (count-- > 0)
+                {
+                    current = current.Next ?? list.First;
+                }
+            }
+            else if (count < 0)
+            {
+                while (count++ < 0)
+                {
+                    current = current.Previous ?? list.Last;
+                }
+            }
+
+            return current;
+        }
+
+        private static uint Solver(string data, int seed)
         {
             var elves = int.Parse(data.Split(' ')[0]);
-            var marbles = int.Parse(data.Split(' ')[6]);
+            var marbles = int.Parse(data.Split(' ')[6]) * seed + 1;
 
-            var players = new int[elves];
-            var board = new List<int>(marbles);
+            var players = new uint[elves];
+            var board = new LinkedList<int>();
+            var current = board.AddFirst(0);
 
-            var currentPos = 0;
-            var currentPlayer = 0;
-
-            board.Insert(0, 0);
-
-            for (int i = 1; i < marbles + 1; i++)
+            for (int i = 1; i < marbles; i++)
             {
-                currentPlayer = i % elves;
-
                 if (i % 23 == 0)
                 {
-                    currentPos = (currentPos - 7) % board.Count;
-                    currentPos = (currentPos < 0) ? board.Count + currentPos : currentPos;
-                    players[currentPlayer] += i;
-                    players[currentPlayer] += board[currentPos];
-                    board.RemoveAt(currentPos);
+                    current = board.Rotate(current, -7);
+
+                    players[i % elves] += (uint)(i + current.Value);
+
+                    current = board.Rotate(current, 1);
+                    board.Remove(board.Rotate(current, -1));
                 }
                 else
                 {
-                    currentPos = ((currentPos + 1) % board.Count) + 1;
-                    board.Insert(currentPos, i);
+                    current = board.Rotate(current, 1);
+                    current = board.AddAfter(current, i);
                 }
             }
 
             return players.Max();
+        }
+
+        private static uint Solve1(string data)
+        {
+            return Solver(data, 1);
+        }
+
+        private static uint Solve2(string data)
+        {
+            return Solver(data, 100);
         }
     }
 }
