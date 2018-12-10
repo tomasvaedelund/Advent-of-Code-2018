@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -51,6 +52,11 @@ namespace Advent_of_Code_2018.Days
         public static int[] ToIntArray(this string data, string splitter = "\r\n")
         {
             return data.Split(splitter).Select(Int32.Parse).ToArray();
+        }
+
+        public static IEnumerable<int> Last(this IEnumerable<int> data, int count)
+        {
+            return data.Reverse().Take(count).Reverse();
         }
     }
 }
