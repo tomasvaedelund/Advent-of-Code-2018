@@ -20,19 +20,6 @@ namespace Advent_of_Code_2018.Days
             var stopWatch = new Stopwatch();
 
             // First star
-<<<<<<< HEAD
-            Debug.Assert(true == true);
-
-            stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
-            Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
-
-            // Second star
-            Debug.Assert(true == true);
-
-            stopWatch = Stopwatch.StartNew();
-            result = "".ToString();
-=======
             Debug.Assert(Solve1(testData) == "CABDFE");
 
             stopWatch = Stopwatch.StartNew();
@@ -44,14 +31,11 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = Solve2(data, 60, 5).ToString();
->>>>>>> ad901332e4cd1625a07b1a14892c24518ac6f1e0
             Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();
         }
-<<<<<<< HEAD
-=======
 
         private static Dictionary<string, List<string>> GetDataInAUsableFormat(string data)
         {
@@ -150,6 +134,5 @@ namespace Advent_of_Code_2018.Days
 
             return tick - 1;
         }
->>>>>>> ad901332e4cd1625a07b1a14892c24518ac6f1e0
     }
 }
