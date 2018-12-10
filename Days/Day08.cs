@@ -27,11 +27,11 @@ namespace Advent_of_Code_2018.Days
             Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
-            // Debug.Assert(Solve2(testData, 0, 2) == 15);
+            Debug.Assert(Solve2(testData) == 66);
 
-            // stopWatch = Stopwatch.StartNew();
-            // result = Solve2(data, 60, 5).ToString();
-            // Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
+            stopWatch = Stopwatch.StartNew();
+            result = Solve2(data).ToString();
+            Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();
@@ -62,6 +62,49 @@ namespace Advent_of_Code_2018.Days
             pos += numMetadata;
 
             return (pos, license, metadata);
+        }
+
+        private static int Solve2(string data)
+        {
+            var result = GetNode(0, 0, data.ToIntArray(" "));
+
+            return result.Item2;
+        }
+
+        private static IEnumerable<int> GetScores(this IEnumerable<int> list, IEnumerable<int> metas)
+        {
+            foreach (var meta in metas)
+            {
+                yield return list.ElementAt(meta - 1);
+            }
+        }
+
+        private static (int, int, int[]) GetNode(int total, int value, int[] data)
+        {
+            var numChildren = data[0];
+            var numMetadata = data[1];
+            var values = new List<int>();
+
+            data = data.Skip(2).ToArray();
+
+            for (int i = 0; i < numChildren; i++)
+            {
+                (total, value, data) = GetNode(total, value, data);
+                total += total;
+                values.Add(value);
+            }
+
+            total += data.Take(numMetadata).Sum();
+
+            if (numChildren == 0)
+            {
+                return (total, data.Take(numMetadata).Sum(), data.Skip(numMetadata).ToArray());
+            }
+            else
+            {
+                var actualValues = values.GetScores(data.Take(numMetadata).Where(m => m > 0 && m <= values.Count));
+                return (total, actualValues.Sum(), data.Skip(numMetadata).ToArray());
+            }
         }
     }
 }
