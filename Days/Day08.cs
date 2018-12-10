@@ -37,44 +37,31 @@ namespace Advent_of_Code_2018.Days
             stopWatch.Stop();
         }
 
-        private static int[] License;
-        private static List<int> Metadata;
         private static int Solve1(string data)
         {
-            License = data.ToIntArray(" ");
-            Metadata = new List<int>();
+            var license = data.ToIntArray(" ");
+            var metadata = new List<int>();
+            var pos = 0;
 
-            GetMetaDataSum(0);
+            (pos, license, metadata) = GetNode(pos, license, metadata);
 
-            return Metadata.Sum();
+            return metadata.Sum();
         }
 
-        private static int GetMetaDataSum(int pos)
+        private static (int, int[], List<int>) GetNode(int pos, int[] license, List<int> metadata)
         {
-            var numChildren = License[pos++];
-            var numMetadata = License[pos++];
+            var numChildren = license[pos++];
+            var numMetadata = license[pos++];
 
             while (numChildren-- > 0)
             {
-                pos = GetMetaDataSum(pos);
+                (pos, license, metadata) = GetNode(pos, license, metadata);
             }
 
-            Metadata.AddRange(License.Skip(pos).Take(numMetadata));
+            metadata.AddRange(license.Skip(pos).Take(numMetadata));
             pos += numMetadata;
 
-            return pos;
-        }
-
-        class Node
-        {
-            public List<Node> Children { get; set; }
-            public List<int> Metadata { get; set; }
-
-            public Node(int numChildren, int numMetadata)
-            {
-                Children = new List<Node>(numChildren);
-                Metadata = new List<int>(numMetadata);
-            }
+            return (pos, license, metadata);
         }
     }
 }
