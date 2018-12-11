@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode.Days
 {
     static class Day05
     {
@@ -14,7 +14,7 @@ namespace Advent_of_Code_2018.Days
             var day = "05";
 
             // Start
-            var data = Helpers.GetDataFromFile($"day{day}.txt");
+            var data = Helper.GetDataFromFile($"day{day}.txt");
             var result = "";
             var stopWatch = new Stopwatch();
 
@@ -23,14 +23,14 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = GetFullyReactingUnits(data).ToString();
-            Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
             Debug.Assert(GetLengthOfShortestPolymer("dabAcCaCBAcCcaDA") == 4);
 
             stopWatch = Stopwatch.StartNew();
             result = GetLengthOfShortestPolymer(data).ToString();
-            Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();

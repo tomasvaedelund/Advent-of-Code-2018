@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode.Days
 {
     static class Day01
     {
@@ -14,11 +14,11 @@ namespace Advent_of_Code_2018.Days
             Debug.Assert(CalibrateDevice("+1, +1, -2", ",") == 0);
             Debug.Assert(CalibrateDevice("-1, -2, -3", ",") == -6);
 
-            var data = Helpers.GetDataFromFile("day01.txt");
+            var data = Helper.GetDataFromFile("day01.txt");
             var result = "";
             var stopWatch = Stopwatch.StartNew();
             result = CalibrateDevice(data).ToString();
-            Helpers.DisplayDailyResult("01 - 1", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult("01 - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
             Debug.Assert(FindFirstRecurranceOfFrequency("+1, -1", ",") == 0);
@@ -28,7 +28,7 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = FindFirstRecurranceOfFrequency(data).ToString();
-            Helpers.DisplayDailyResult("01 - 2", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult("01 - 2", result, stopWatch.ElapsedMilliseconds);
             stopWatch.Stop();
         }
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode
 {
-    public static class Helpers
+    public static class Helper
     {
         public static string GetDataFromFile(string fileName)
         {

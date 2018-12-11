@@ -1,15 +1,13 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/Advent-of-Code-2018.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        }
-    ]
+    "tasks": [{
+        "label": "build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/AdventOfCode.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    }]
 }

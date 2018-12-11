@@ -1,7 +1,7 @@
 ﻿using System;
-using Advent_of_Code_2018.Days;
+using AdventOfCode.Days;
 
-namespace Advent_of_Code_2018
+namespace AdventOfCode
 {
     class Program
     {
@@ -17,7 +17,9 @@ namespace Advent_of_Code_2018
             // Day08.GetResult();
             // Day09.GetResult();
             // Day10.GetResult();
-            Day11.GetResult();
+            // Day11.GetResult();
+            // // Runner.Run(new AdventOfCode.Y2018.Day11.Solution());
+            Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
         }
     }
 }

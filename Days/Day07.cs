@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode.Days
 {
     static class Day07
     {
@@ -14,8 +14,8 @@ namespace Advent_of_Code_2018.Days
             var day = "07";
 
             // Start
-            var testData = Helpers.GetDataFromFile($"day{day}_test.txt");
-            var data = Helpers.GetDataFromFile($"day{day}.txt");
+            var testData = Helper.GetDataFromFile($"day{day}_test.txt");
+            var data = Helper.GetDataFromFile($"day{day}.txt");
             var result = "";
             var stopWatch = new Stopwatch();
 
@@ -24,14 +24,14 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = Solve1(data).ToString();
-            Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
             Debug.Assert(Solve2(testData, 0, 2) == 15);
 
             stopWatch = Stopwatch.StartNew();
             result = Solve2(data, 60, 5).ToString();
-            Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();

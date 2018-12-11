@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode.Days
 {
     static class Day02
     {
@@ -12,18 +12,18 @@ namespace Advent_of_Code_2018.Days
             // First star
             Debug.Assert(GetChecksumPart("abcdef, bababc, abbcde, abcccd, aabcdd, abcdee, ababab", ",") == 12);
 
-            var data = Helpers.GetDataFromFile("day02.txt");
+            var data = Helper.GetDataFromFile("day02.txt");
             var result = "";
             var stopWatch = Stopwatch.StartNew();
             result = GetChecksumPart(data).ToString();
-            Helpers.DisplayDailyResult("02 - 1", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult("02 - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
             Debug.Assert(GetSimilarBoxes("abcde, fghij, klmno, pqrst, fguij, axcye, wvxyz", ",") == "fgij");
 
             stopWatch = Stopwatch.StartNew();
             result = GetSimilarBoxes(data);
-            Helpers.DisplayDailyResult("02 - 2", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult("02 - 2", result, stopWatch.ElapsedMilliseconds);
             stopWatch.Stop();
         }
 

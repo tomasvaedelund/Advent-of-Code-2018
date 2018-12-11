@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Advent_of_Code_2018.Days
+namespace AdventOfCode.Days
 {
     static class Day03
     {
@@ -13,7 +13,7 @@ namespace Advent_of_Code_2018.Days
             var day = "03";
 
             // Start
-            var data = Helpers.GetDataFromFile($"day{day}.txt");
+            var data = Helper.GetDataFromFile($"day{day}.txt");
             var result = "";
             var stopWatch = new Stopwatch();
 
@@ -22,14 +22,14 @@ namespace Advent_of_Code_2018.Days
 
             stopWatch = Stopwatch.StartNew();
             result = GetHowManySquareInchesOverlap(data).ToString();
-            Helpers.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 1", result, stopWatch.ElapsedMilliseconds);
 
             // Second star
             Debug.Assert(GetNoneOverlappingClaim("#1 @ 1,3: 4x4; #2 @ 3,1: 4x4; #3 @ 5,5: 2x2", ";") == 3);
 
             stopWatch = Stopwatch.StartNew();
             result = GetNoneOverlappingClaim(data).ToString();
-            Helpers.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
+            Helper.DisplayDailyResult($"{day} - 2", result, stopWatch.ElapsedMilliseconds);
 
             // End
             stopWatch.Stop();
