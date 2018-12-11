@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AdventOfCode.Days;
 
 namespace AdventOfCode
@@ -18,8 +19,57 @@ namespace AdventOfCode
             // Day09.GetResult();
             // Day10.GetResult();
             // Day11.GetResult();
-            // // Runner.Run(new AdventOfCode.Y2018.Day11.Solution());
-            Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
+            // Runner.Run(new AdventOfCode.Y2018.Day11.Solution());
+            // Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
+            Command(args);
+        }
+
+        static void Command(string[] args)
+        {
+            if (args.Any() && args.Length == 2)
+            {
+                switch (args[0])
+                {
+                    case "prep":
+                        Prepare(args[1]);
+                        return;
+                    default:
+                        Console.WriteLine($"Unknown command '{args[0]}'");
+                        return;
+                }
+            }
+        }
+
+        private static void Prepare(string arg)
+        {
+            try
+            {
+                var yearDay = arg.Split('/', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+
+                if (yearDay.Count() != 2)
+                {
+                    Usage(arg, "Unknown format");
+                    return;
+                }
+
+                var result = Preparer.Run(yearDay.ElementAt(0), yearDay.ElementAt(1));
+                Message(result);
+
+            }
+            catch (Exception e)
+            {
+                Usage(arg, e.Message);
+            }
+        }
+
+        private static void Usage(string arg, string message)
+        {
+            Console.WriteLine($"Error parsing argument '{arg}'. Message: '{message}");
+        }
+
+        private static void Message(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

@@ -1,5 +1,10 @@
 # Advent-of-Code-2018
 
+Prepare a new day by running:
+```
+dotnet run -- prep 2018/13
+```
+
 | Day | Time#1 | Time#2 |
 |-----|-------:|-------:|
 | 01  | 0ms | 11ms |
