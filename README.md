@@ -18,7 +18,7 @@ dotnet run -- prep 2018/13
 | 09  | 77ms | ?ms |
 | 10  | 646ms | 646ms |
 | 11  | 38ms | 6974ms |
-| 12  | ?ms | ?ms |
+| 12  | 0ms | 3ms |
 | 13  | ?ms | ?ms |
 | 14  | ?ms | ?ms |
 | 15  | ?ms | ?ms |
