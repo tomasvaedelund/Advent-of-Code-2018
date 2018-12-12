@@ -15,13 +15,13 @@ namespace AdventOfCode.Y2018.Day12
 
         public bool IsTest { get; set; } = false;
 
-        public IEnumerable<(string, long)> Solve(string input)
+        public IEnumerable<(string result, long time)> Solve(string input)
         {
             yield return PartOne(input);
             yield return PartTwo(input);
         }
 
-        public (string, long) PartOne(string input)
+        public (string result, long time) PartOne(string input)
         {
             var timer = Stopwatch.StartNew();
             var parsed = GetParsedInput(input);
@@ -41,7 +41,7 @@ namespace AdventOfCode.Y2018.Day12
             return (result.ToString(), timer.ElapsedMilliseconds);
         }
 
-        public (string, long) PartTwo(string input)
+        public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
             var parsed = GetParsedInput(input);

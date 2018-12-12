@@ -25,7 +25,8 @@ namespace AdventOfCode
             // Day10.GetResult();
             // Day11.GetResult();
             // Runner.Run(new AdventOfCode.Y2018.Day11.Solution());
-            Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
+            // Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
+            Runner.Run(new AdventOfCode.Y2018.Day13.Solution());
         }
 
         static void Command(string[] args)

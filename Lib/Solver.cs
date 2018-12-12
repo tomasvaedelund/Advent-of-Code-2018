@@ -8,9 +8,9 @@ namespace AdventOfCode
     {
         string GetName();
         void Test(string input);
-        IEnumerable<(string, long)> Solve(string input);
-        (string, long) PartOne(string input);
-        (string, long) PartTwo(string input);
+        IEnumerable<(string result, long time)> Solve(string input);
+        (string result, long time) PartOne(string input);
+        (string result, long time) PartTwo(string input);
     }
 
     static class SolverExtensions

@@ -18,8 +18,8 @@ namespace AdventOfCode
 
             foreach (var solution in solver.Solve(input))
             {
-                Console.WriteLine($"{solver.GetName()} - {counter} Time: {solution.Item2}ms");
-                Console.WriteLine($"{solver.GetName()} - {counter} Result: {solution.Item1}");
+                Console.WriteLine($"{solver.GetName()} - {counter} Time: {solution.time}ms");
+                Console.WriteLine($"{solver.GetName()} - {counter} Result: {solution.result}");
                 counter++;
             }
         }
