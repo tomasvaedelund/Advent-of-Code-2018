@@ -22,34 +22,45 @@ namespace AdventOfCode.Y2018.Day13
         {
             var timer = Stopwatch.StartNew();
             var parsed = ParseInput(input);
-            var result = "";
 
-            while (true)
+            while (!parsed.carts.Any(c => c.IsCrashed))
             {
-                var status = MoveCarts(parsed.tracks, parsed.carts);
-
-                if (status.isCrash)
-                {
-                    result = $"{status.x},{status.y}";
-                    break;
-                }
+                parsed.carts = MoveCarts(parsed.tracks, parsed.carts);
             }
 
-            return (result, timer.ElapsedMilliseconds);
+            var cart = parsed.carts.Where(c => c.IsCrashed).First();
+
+            return ($"{cart.X},{cart.Y}", timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            return ($"result", timer.ElapsedMilliseconds);
+            var parsed = ParseInput(input);
+
+            while (parsed.carts.Count(c => c.IsCrashed == false) != 1)
+            {
+                parsed.carts = MoveCarts(parsed.tracks, parsed.carts);
+            }
+
+            var cart = parsed.carts.Where(c => c.IsCrashed == false).Single();
+
+            return ($"{cart.X},{cart.Y}", timer.ElapsedMilliseconds);
         }
 
-        public (bool isCrash, int x, int y) MoveCarts(char[][] tracks, IEnumerable<Cart> carts)
+        public IEnumerable<Cart> MoveCarts(char[][] tracks, IEnumerable<Cart> carts)
         {
-            carts = carts.OrderBy(c => c.Y).ThenBy(c => c.X);
+            var data = new List<Cart>(carts.OrderBy(c => c.Y).ThenBy(c => c.X));
 
-            foreach (var cart in carts)
+            for (int i = 0; i < carts.Count(); i++)
             {
+                var cart = data.ElementAt(i);
+
+                if (cart.IsCrashed)
+                {
+                    continue;
+                }
+
                 switch (cart.Direction)
                 {
                     // North
@@ -74,18 +85,16 @@ namespace AdventOfCode.Y2018.Day13
 
                 cart.Direction = GetNewDirection(tracks, cart);
 
-                var crashes = carts
-                    .GroupBy(c => new { c.X, c.Y })
-                    .Select(g => new { cart = g.Key, count = g.Count() })
-                    .Where(g => g.count > 1);
-
-                if (crashes.Any())
-                {
-                    return (isCrash: true, x: crashes.First().cart.X, y: crashes.First().cart.Y);
-                }
+                data
+                    .Where(c => c.IsCrashed == false)
+                    .GroupBy(c => c)
+                    .Where(c => c.Count() > 1)
+                    .SelectMany(c => c)
+                    .ToList()
+                    .ForEach(c => c.IsCrashed = true);
             }
 
-            return (isCrash: false, x: 0, y: 0);
+            return data;
         }
 
         public int GetNewDirection(char[][] tracks, Cart cart)
@@ -261,6 +270,7 @@ namespace AdventOfCode.Y2018.Day13
             public int Y { get; set; }
             public int Direction { get; set; }
             public int Last { get; set; }
+            public bool IsCrashed { get; set; }
 
             public Cart(int x, int y, int dir, int last)
             {
@@ -268,6 +278,21 @@ namespace AdventOfCode.Y2018.Day13
                 Y = y;
                 Direction = dir;
                 Last = last;
+            }
+
+            public override bool Equals(object obj)
+            {
+                Cart other = obj as Cart;
+                if (other == null)
+                {
+                    return false;
+                }
+                return X == other.X && Y == other.Y;
+            }
+
+            public override int GetHashCode()
+            {
+                return (X.GetHashCode() ^ Y.GetHashCode()).GetHashCode();
             }
         }
     }
