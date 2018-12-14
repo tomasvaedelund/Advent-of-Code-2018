@@ -34,13 +34,31 @@ namespace AdventOfCode.Y2018.Day14
 
             var result = GetResult(numRecipes, recipes);
 
-            // 4104510979 <
             return (result, timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
+            var elves = new int[] { 0, 1 };
+            var recipes = new List<int>() { 3, 7 };
+            var needle = "157901";
+            var result = 0;
+
+            var temp = CreateNewRecipes(elves, recipes);
+
+            while (true)
+            {
+                temp = CreateNewRecipes(temp.elves, temp.recipes);
+
+                result = GetIndexOfValue(recipes, needle);
+
+                if (result >= 0)
+                {
+                    break;
+                }
+            }
+
             return ($"result", timer.ElapsedMilliseconds);
         }
 
@@ -68,6 +86,14 @@ namespace AdventOfCode.Y2018.Day14
             }
 
             return (elves: elves, recipes: recipes);
+        }
+
+        public int GetIndexOfValue(List<int> recipes, string value)
+        {
+            var r = string.Join("", recipes);
+            var t = r.IndexOf(value);
+
+            return t;
         }
 
         public string GetResult(int numRecipes, List<int> recipes)

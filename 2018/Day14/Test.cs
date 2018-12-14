@@ -14,15 +14,23 @@ namespace AdventOfCode.Y2018.Day14
             var elves = new int[] { 0, 1 };
             var recipes = new List<int>() { 3, 7 };
 
-            TestCreateNewRecipes(sut, elves, recipes);
+            TestCreateNewRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes));
 
-            ShouldImproveAfterXRecipes(sut, elves, recipes, 5, "0124515891");
+            ShouldImproveAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 5, "0124515891");
 
-            ShouldImproveAfterXRecipes(sut, elves, recipes, 9, "5158916779");
+            ShouldImproveAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 9, "5158916779");
 
-            ShouldImproveAfterXRecipes(sut, elves, recipes, 18, "9251071085");
+            ShouldImproveAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 18, "9251071085");
 
-            ShouldImproveAfterXRecipes(sut, elves, recipes, 2018, "5941429882");
+            ShouldImproveAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 2018, "5941429882");
+
+            ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 9, "51589");
+
+            ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 5, "01245");
+
+            ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 18, "92510");
+
+            ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 2018, "59414");
 
             Debug.Assert(true == true);
         }
@@ -65,6 +73,26 @@ namespace AdventOfCode.Y2018.Day14
             }
 
             var fact = sut.GetResult(numRecipes, recipes);
+
+            Debug.Assert(expected == fact);
+        }
+
+        private void ShouldFindNumberAfterXRecipes(Solution sut, int[] elves, List<int> recipes, int expected, string needle)
+        {
+            var result = sut.CreateNewRecipes(elves, recipes);
+            var fact = 0;
+
+            while (true)
+            {
+                result = sut.CreateNewRecipes(result.elves, result.recipes);
+
+                fact = sut.GetIndexOfValue(recipes, needle);
+
+                if (fact >= 0)
+                {
+                    break;
+                }
+            }
 
             Debug.Assert(expected == fact);
         }
