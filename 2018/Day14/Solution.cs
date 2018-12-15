@@ -75,9 +75,14 @@ namespace AdventOfCode.Y2018.Day14
             {
                 recipes.Add(0);
             }
+            else if (score > 9)
+            {
+                recipes.Add(1);
+                recipes.Add(score % 10);
+            }
             else
             {
-                recipes.AddRange(score.ToIntList());
+                recipes.Add(score);
             }
 
             for (int i = 0; i < elves.Length; i++)
@@ -88,35 +93,27 @@ namespace AdventOfCode.Y2018.Day14
             return (elves: elves, recipes: recipes);
         }
 
-        public int GetIndexOfValue(List<int> recipes, string value)
+        public int GetIndexOfValue(List<int> recipes, string needle)
         {
-            var r = string.Join("", recipes);
-            var t = r.IndexOf(value);
+            var t1 = string.Concat(recipes.Last(needle.Length)).Equals(needle);
+            var t2 = string.Concat(recipes.Last(needle.Length + 1).Take(needle.Length)).Equals(needle);
 
-            return t;
+            if (t1)
+            {
+                return recipes.Count - needle.Length;
+            }
+
+            if (t2)
+            {
+                return recipes.Count - needle.Length - 1;
+            }
+
+            return -1;
         }
 
         public string GetResult(int numRecipes, List<int> recipes)
         {
             return string.Join("", recipes.Skip(numRecipes).Take(10));
-        }
-    }
-
-    public static class SolutionExtensions
-    {
-        public static List<int> ToIntList(this int number)
-        {
-            List<int> listOfInts = new List<int>();
-
-            while (number > 0)
-            {
-                listOfInts.Add(number % 10);
-                number = number / 10;
-            }
-
-            listOfInts.Reverse();
-
-            return listOfInts;
         }
     }
 }
