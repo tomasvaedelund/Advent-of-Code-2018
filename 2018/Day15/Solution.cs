@@ -69,9 +69,9 @@ namespace AdventOfCode.Y2018.Day15
                 }
 
                 openList.Remove(currentPoint);
-                openList.AddLast
             }
 
+            return openList;
         }
 
         public IEnumerable<Point> GetValidTargets(IEnumerable<Point> friends, IEnumerable<Point> enemies, IEnumerable<Point> walls)
