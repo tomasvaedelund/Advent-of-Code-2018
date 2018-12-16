@@ -28,7 +28,8 @@ namespace AdventOfCode
                 // Runner.Run(new AdventOfCode.Y2018.Day11.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day12.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day13.Solution());
-                Runner.Run(new AdventOfCode.Y2018.Day14.Solution());
+                // Runner.Run(new AdventOfCode.Y2018.Day14.Solution());
+                Runner.Run(new AdventOfCode.Y2018.Day15.Solution());
             }
         }
 
