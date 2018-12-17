@@ -42,24 +42,21 @@ namespace AdventOfCode.Y2018.Day14
             var timer = Stopwatch.StartNew();
             var elves = new int[] { 0, 1 };
             var recipes = new List<int>() { 3, 7 };
-            var needle = "157901";
-            var result = 0;
+            var needle = new int[] { 1, 5, 7, 9, 0, 1 };
 
-            var temp = CreateNewRecipes(elves, recipes);
+            var temp = CreateNewRecipesTwo(elves, recipes, needle);
 
             while (true)
             {
-                temp = CreateNewRecipes(temp.elves, temp.recipes);
+                temp = CreateNewRecipesTwo(temp.elves, temp.recipes, needle);
 
-                result = GetIndexOfValue(recipes, needle);
-
-                if (result >= 0)
+                if (temp.index > 0)
                 {
                     break;
                 }
             }
 
-            return ($"result", timer.ElapsedMilliseconds);
+            return ($"{temp.index}", timer.ElapsedMilliseconds);
         }
 
         public (int[] elves, List<int> recipes) CreateNewRecipes(int[] elves, List<int> recipes)
@@ -71,11 +68,7 @@ namespace AdventOfCode.Y2018.Day14
                 score += recipes[elves[i]];
             }
 
-            if (score == 0)
-            {
-                recipes.Add(0);
-            }
-            else if (score > 9)
+            if (score > 9)
             {
                 recipes.Add(1);
                 recipes.Add(score % 10);
@@ -93,22 +86,53 @@ namespace AdventOfCode.Y2018.Day14
             return (elves: elves, recipes: recipes);
         }
 
-        public int GetIndexOfValue(List<int> recipes, string needle)
+        public (int[] elves, List<int> recipes, int[] needle, int index) CreateNewRecipesTwo(int[] elves, List<int> recipes, int[] needle)
         {
-            var t1 = string.Concat(recipes.Last(needle.Length)).Equals(needle);
-            var t2 = string.Concat(recipes.Last(needle.Length + 1).Take(needle.Length)).Equals(needle);
+            var score = 0;
+            var index = 0;
 
-            if (t1)
+            for (int i = 0; i < elves.Length; i++)
             {
-                return recipes.Count - needle.Length;
+                score += recipes[elves[i]];
             }
 
-            if (t2)
+            if (score > 9)
             {
-                return recipes.Count - needle.Length - 1;
+                recipes.Add(1);
+                index = IsNeedleInHaystack(recipes, needle) ? recipes.Count : 0;
+                if (index == 0)
+                {
+                    recipes.Add(score % 10);
+                    index = IsNeedleInHaystack(recipes, needle) ? recipes.Count : 0;
+                }
+            }
+            else
+            {
+                recipes.Add(score);
+                index = IsNeedleInHaystack(recipes, needle) ? recipes.Count : 0;
             }
 
-            return -1;
+            for (int i = 0; i < elves.Length; i++)
+            {
+                elves[i] = (elves[i] + recipes[elves[i]] + 1) % recipes.Count;
+            }
+
+            return (elves: elves, recipes: recipes, needle: needle, index: index - needle.Length);
+        }
+
+        public bool IsNeedleInHaystack(IEnumerable<int> recipes, int[] needle)
+        {
+            var r = recipes.Skip(recipes.Count() - needle.Length).ToArray();
+
+            for (int i = 0; i < needle.Length; i++)
+            {
+                if (r[i] != needle[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public string GetResult(int numRecipes, List<int> recipes)

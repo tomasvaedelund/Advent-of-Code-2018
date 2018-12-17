@@ -32,6 +32,12 @@ namespace AdventOfCode.Y2018.Day14
 
             ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 2018, "59414");
 
+            //ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 20283721, "147061");
+
+            // ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 20236441, "920831");
+
+            // ShouldFindNumberAfterXRecipes(sut, new List<int>(elves).ToArray(), new List<int>(recipes), 20198090, "768071");
+
             Debug.Assert(true == true);
         }
 
@@ -79,22 +85,23 @@ namespace AdventOfCode.Y2018.Day14
 
         private void ShouldFindNumberAfterXRecipes(Solution sut, int[] elves, List<int> recipes, int expected, string needle)
         {
-            var result = sut.CreateNewRecipes(elves, recipes);
-            var fact = 0;
+            var n = needle.Select(c => c - '0').ToArray();
+
+            var temp = sut.CreateNewRecipesTwo(elves, recipes, n);
 
             while (true)
             {
-                result = sut.CreateNewRecipes(result.elves, result.recipes);
+                temp = sut.CreateNewRecipesTwo(temp.elves, temp.recipes, n);
 
-                fact = sut.GetIndexOfValue(recipes, needle);
-
-                if (fact >= 0)
+                if (temp.index > 0)
                 {
                     break;
                 }
             }
 
-            Debug.Assert(expected == fact);
+            var s = string.Join("", recipes);
+
+            Debug.Assert(temp.index == expected);
         }
     }
 }
