@@ -22,7 +22,7 @@ namespace AdventOfCode.Y2018.Day17
         public (string result, long time) PartOne(string input)
         {
             var timer = Stopwatch.StartNew();
-            var parsed = ParseInput(input);
+            //var parsed = ParseInput(input);
             return ($"result", timer.ElapsedMilliseconds);
         }
 
@@ -32,7 +32,17 @@ namespace AdventOfCode.Y2018.Day17
             return ($"result", timer.ElapsedMilliseconds);
         }
 
-        public char[,] ParseInput(string input)
+        public char[,] PourWater(char[,] matrix, int minX)
+        {
+            while (true)
+            {
+                var current = (y: 0, x: 500 - minX);
+
+
+            }
+        }
+
+        public (char[,] matrix, int minX, int minY) ParseInput(string input)
         {
             var lines = input.Split("\r\n");
             var rows = new List<Row>();
@@ -83,9 +93,12 @@ namespace AdventOfCode.Y2018.Day17
                 }
             }
 
-            //PrintMatrix(matrix);
+            // Place water source
+            matrix[minY - 1, 500 - minX] = '+';
 
-            return matrix;
+            PrintMatrix(matrix);
+
+            return (matrix: matrix, minX: minX, minY: minY);
         }
 
         public void PrintMatrix(char[,] matrix)
