@@ -30,7 +30,7 @@ namespace AdventOfCode.Y2018.Day16
 
         private void ShouldReturnCorrectAmountOfValidCommands(Solution sut, string[] commands, int[] v1, int[] v2, int[] v3, int expected)
         {
-            var fact = sut.GetBehaviours(commands, (v1, v2, v3));
+            var fact = sut.GetBehaviours(commands, (v1, v2, v3)).methodsCount.Sum();
 
             Debug.Assert(fact == expected);
         }

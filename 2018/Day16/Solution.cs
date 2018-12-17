@@ -29,49 +29,77 @@ namespace AdventOfCode.Y2018.Day16
                 "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"
             };
 
-            var result = GetBehavioursCount(commands, parsed).Where(x => x >= 3).Count();
+            var result = GetBehavioursCount(commands, parsed);
 
-            return (result.ToString(), timer.ElapsedMilliseconds);
+            return (result.Where(x => x.methodsCount.Sum() >= 3).Count().ToString(), timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
+
+            var parsed = ParseInput(input);
+
+            var commands = new string[]
+            {
+                "addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti",
+                "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"
+            };
+
+            var result = GetBehavioursCount(commands, parsed);
+
+            GetSummedBehaviours(result);
+
             return ($"result", timer.ElapsedMilliseconds);
         }
 
-        public int[] GetBehavioursCount(string[] commands, IEnumerable<(int[] before, int[] command, int[] after)> operations)
+        public Dictionary<int, int[]> GetSummedBehaviours(IEnumerable<(int method, int[] methodsCount)> operations)
         {
-            var result = new int[operations.Count()];
+            var temp = new Dictionary<int, int[]>();
+
+            foreach (var op in operations)
+            {
+                if (!temp.TryAdd(op.method, op.methodsCount))
+                {
+                    temp[op.method] = temp[op.method].Zip(op.methodsCount, (a, b) => a + b).ToArray();
+                }
+            }
+
+            return temp;
+        }
+
+        public IEnumerable<(int method, int[] methodsCount)> GetBehavioursCount(string[] commands, IEnumerable<(int[] before, int[] command, int[] after)> operations)
+        {
+            var result = new List<(int method, int[] methodsCount)>();
 
             for (int i = 0; i < operations.Count(); i++)
             {
-                result[i] = GetBehaviours(commands, operations.ElementAt(i));
+                result.Add(GetBehaviours(commands, operations.ElementAt(i)));
             }
 
             return result;
         }
 
-        public int GetBehaviours(string[] commands, (int[] before, int[] command, int[] after) operation)
+        public (int method, int[] methodsCount) GetBehaviours(string[] methods, (int[] before, int[] command, int[] after) operation)
         {
-            var count = 0;
+            var methodsCount = new int[methods.Length];
 
-            foreach (var c in commands)
+            for (int i = 0; i < methods.Length; i++)
             {
                 var before = new List<int>(operation.before).ToArray();
                 var command = operation.command;
                 var after = operation.after;
-                var result = typeof(SolutionExtensions).GetMethod(c).Invoke(null, new object[] { before, command[1], command[2], command[3] });
+                var result = typeof(SolutionExtensions).GetMethod(methods[i]).Invoke(null, new object[] { before, command[1], command[2], command[3] });
 
-                count += (after.SequenceEqual(result as int[])) ? 1 : 0;
+                methodsCount[i] = (after.SequenceEqual(result as int[])) ? 1 : 0;
             }
 
-            return count;
+            return (method: operation.command[0], methodsCount: methodsCount);
         }
 
         public IEnumerable<(int[] before, int[] command, int[] after)> ParseInput(string input)
         {
-            var split = input.Split("\r\n");
+            var split = input.Split("\r\n").Take(3260);
             var result = new List<(int[] before, int[] command, int[] after)>();
 
             var operations = split
@@ -82,11 +110,6 @@ namespace AdventOfCode.Y2018.Day16
 
             foreach (var op in operations)
             {
-                if (op[0].Contains("###"))
-                {
-                    break;
-                }
-
                 var before = op[0].Replace("Before: ", "").Replace("[", "").Replace("]", "").Split(", ").Select(int.Parse).ToArray();
                 var command = op[1].Split(" ").Select(int.Parse).ToArray();
                 var after = op[2].Replace("After: ", "").Replace("[", "").Replace("]", "").Split(", ").Select(int.Parse).ToArray();
