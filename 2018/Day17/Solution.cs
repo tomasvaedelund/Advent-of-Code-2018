@@ -36,7 +36,7 @@ namespace AdventOfCode.Y2018.Day17
         {
             while (true)
             {
-                var current = (y: 0, x: 500 - minX);
+                // var current = (y: 0, x: 500 - minX);
 
 
             }
