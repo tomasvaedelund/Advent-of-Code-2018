@@ -37,21 +37,33 @@ namespace AdventOfCode.Y2018.Day18
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            // var parsed = ParseInput(input);
+            var parsed = ParseInput(input);
+            var amounts = new List<int>();
+            var minutes = 1000000000;
+            var index = 0;
+            var length = 0;
 
-            // var matrix = PassXMinutes(parsed, 1000000000);
+            while (minutes-- > 0)
+            {
+                parsed = PassOneMinute(parsed);
+                var wooded = parsed.Cast<char>().Count(c => c == '|');
+                var lumberyards = parsed.Cast<char>().Count(c => c == '#');
+                var amount = wooded * lumberyards;
 
-            // var wooded = matrix.Cast<char>().Count(c => c == '|');
-            // var lumberyards = matrix.Cast<char>().Count(c => c == '#');
-            // var result = wooded * lumberyards;
+                amounts.Add(amount);
+                var temp = HasRepeatingPattern(amounts);
+                if (temp.repeats)
+                {
+                    index = temp.pos;
+                    length = temp.length;
+                    break;
+                }
+            }
 
-            // Pattern starts repeating after 547 minutes in 28 minutes intervals
-            // Result = 1 000 000 000 - 547 = 999 999 453
-            // Divide by 28 while >= 0 && <= 28
-            // Gives: 2
-            // Answer at 547 + 2 = 549 minutes:
+            var pos = (1000000000 - index) % length;
 
-            var result = 174420;
+            // - 1 since we want to count from the pos of the last item BEFORE pattern starts repeating
+            var result = amounts[index + pos - 1];
 
             return ($"{result}", timer.ElapsedMilliseconds);
         }
@@ -76,14 +88,14 @@ namespace AdventOfCode.Y2018.Day18
         {
             while (minutes-- > 0)
             {
-                matrix = PassOneMinte(matrix);
+                matrix = PassOneMinute(matrix);
                 // WriteMatrix(matrix, minutes);
             }
 
             return matrix;
         }
 
-        public char[,] PassOneMinte(char[,] matrix)
+        public char[,] PassOneMinute(char[,] matrix)
         {
             var tempMatrix = new char[matrix.GetLength(0), matrix.GetLength(1)];
             Array.Copy(matrix, 0, tempMatrix, 0, matrix.Length);
@@ -190,6 +202,30 @@ namespace AdventOfCode.Y2018.Day18
 
                 Console.WriteLine();
             }
+        }
+
+        public (bool repeats, int pos, int length) HasRepeatingPattern(List<int> array)
+        {
+            for (int startPos = 0; startPos < array.Count; startPos++)
+            {
+                for (int sequenceLength = 1; sequenceLength <= (array.Count - startPos) / 2; sequenceLength++)
+                {
+                    var equals = true;
+                    for (int i = 0; i < sequenceLength; i++)
+                    {
+                        if (array[startPos + i] != array[startPos + sequenceLength + i])
+                        {
+                            equals = false;
+                        }
+                    }
+                    if (equals)
+                    {
+                        return (true, startPos, sequenceLength);
+                    }
+                }
+            }
+
+            return (false, 0, 0);
         }
     }
 }
