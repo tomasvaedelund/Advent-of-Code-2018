@@ -29,7 +29,7 @@ namespace AdventOfCode.Y2018.Day16
                 "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"
             };
 
-            var result = GetBehavioursCount(commands, parsed);
+            var result = GetAllMatchingMethods(commands, parsed);
 
             return (result.Where(x => x.methodsCount.Sum() >= 3).Count().ToString(), timer.ElapsedMilliseconds);
         }
@@ -46,41 +46,107 @@ namespace AdventOfCode.Y2018.Day16
                 "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"
             };
 
-            var result = GetBehavioursCount(commands, parsed);
+            var matchingMethods = GetAllMatchingMethodsCombined(commands, parsed);
 
-            GetSummedBehaviours(result);
+            // This gives (pen and paper...)
+            // 11 = 14 = eqri
+            // 05 = 8 = setr
+            // 10 = 15 = eqrr
+            // 07 = 13 = eqir
+            // 15 = 11 = gtri
+            // 13 = 12 = gtrr
+            // 04 = 10 = gtir
+            // 00 = 7 = bori
+            // 02 = 4 = banr
+            // 03 = 5 = bani
+            // 14 = 2 = mulr
+            // 08 = 9 = seti
+            // 12 = 6 = borr
+            // 01 = 3 = muli
+            // 06 = 0 = addr
+            // 09 = 1 = addi
 
-            return ($"result", timer.ElapsedMilliseconds);
+            var matched = new Dictionary<int, string>()
+            {
+                { 0, "bori"},
+                { 1, "muli"},
+                { 2, "banr"},
+                { 3, "bani"},
+                { 4, "gtir"},
+                { 5, "setr"},
+                { 6, "addr"},
+                { 7, "eqir"},
+                { 8, "seti"},
+                { 9, "addi"},
+                { 10, "eqrr"},
+                { 11, "eqri"},
+                { 12, "borr"},
+                { 13, "gtrr"},
+                { 14, "mulr"},
+                { 15, "gtri"}
+            };
+
+            var result = RunProgram(matched, input);
+
+            return ($"{result[0]}", timer.ElapsedMilliseconds);
         }
 
-        public Dictionary<int, int[]> GetSummedBehaviours(IEnumerable<(int method, int[] methodsCount)> operations)
+        private int[] RunProgram(Dictionary<int, string> matched, string input)
         {
-            var temp = new Dictionary<int, int[]>();
+            var commands = ParseInputTwo(input);
+            var result = new int[] { 0, 0, 0, 0 };
 
-            foreach (var op in operations)
+            foreach (var c in commands)
             {
-                if (!temp.TryAdd(op.method, op.methodsCount))
-                {
-                    temp[op.method] = temp[op.method].Zip(op.methodsCount, (a, b) => a + b).ToArray();
-                }
-            }
-
-            return temp;
-        }
-
-        public IEnumerable<(int method, int[] methodsCount)> GetBehavioursCount(string[] commands, IEnumerable<(int[] before, int[] command, int[] after)> operations)
-        {
-            var result = new List<(int method, int[] methodsCount)>();
-
-            for (int i = 0; i < operations.Count(); i++)
-            {
-                result.Add(GetBehaviours(commands, operations.ElementAt(i)));
+                result = RunCommand(c, matched[c[0]], result);
             }
 
             return result;
         }
 
-        public (int method, int[] methodsCount) GetBehaviours(string[] methods, (int[] before, int[] command, int[] after) operation)
+        private int[] RunCommand(int[] command, string method, int[] data)
+        {
+            return typeof(SolutionExtensions).GetMethod(method).Invoke(null, new object[] { data, command[1], command[2], command[3] }) as int[];
+        }
+
+        public IEnumerable<(int command, int[] methodsCount)> GetAllMatchingMethodsCombined(string[] methods, IEnumerable<(int[] before, int[] command, int[] after)> operations)
+        {
+            var result = new List<(int command, int[] methodsCount)>();
+
+            var matchingMethods = GetAllMatchingMethods(methods, operations);
+
+            for (int i = 0; i < 16; i++)
+            {
+                var methodsCount = matchingMethods
+                    .Where(m => m.command == i)
+                    .Select(x => x.methodsCount)
+                    .Aggregate((q, w) =>
+                    {
+                        return q.Zip(w, (x, y) => x + y).ToArray();
+                    });
+
+                result.Add((i, methodsCount));
+            }
+
+            return result;
+        }
+
+        public IEnumerable<(int command, int[] methodsCount)> GetAllMatchingMethods(string[] methods, IEnumerable<(int[] before, int[] command, int[] after)> operations)
+        {
+            var result = new List<(int command, int[] methodsCount)>();
+
+            foreach (var o in operations)
+            {
+                var matchingMethods = GetMatchingMethods(methods, o);
+
+                result.Add((o.command[0], matchingMethods));
+            }
+
+            return result;
+
+        }
+
+        public int[] GetMatchingMethods(string[] methods, (int[] before, int[] command, int[] after) operation)
         {
             var methodsCount = new int[methods.Length];
 
@@ -94,7 +160,7 @@ namespace AdventOfCode.Y2018.Day16
                 methodsCount[i] = (after.SequenceEqual(result as int[])) ? 1 : 0;
             }
 
-            return (method: operation.command[0], methodsCount: methodsCount);
+            return methodsCount;
         }
 
         public IEnumerable<(int[] before, int[] command, int[] after)> ParseInput(string input)
@@ -115,6 +181,19 @@ namespace AdventOfCode.Y2018.Day16
                 var after = op[2].Replace("After: ", "").Replace("[", "").Replace("]", "").Split(", ").Select(int.Parse).ToArray();
 
                 result.Add((before, command, after));
+            }
+
+            return result;
+        }
+
+        public IEnumerable<int[]> ParseInputTwo(string input)
+        {
+            var split = input.Split("\r\n").Skip(3262);
+            var result = new List<int[]>();
+
+            foreach (var line in split)
+            {
+                result.Add(line.Split(' ').Select(int.Parse).ToArray());
             }
 
             return result;

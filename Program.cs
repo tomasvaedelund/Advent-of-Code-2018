@@ -30,9 +30,9 @@ namespace AdventOfCode
                 // Runner.Run(new AdventOfCode.Y2018.Day13.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day14.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day15.Solution());
-                // Runner.Run(new AdventOfCode.Y2018.Day16.Solution());
+                Runner.Run(new AdventOfCode.Y2018.Day16.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day17.Solution());
-                Runner.Run(new AdventOfCode.Y2018.Day18.Solution());
+                // Runner.Run(new AdventOfCode.Y2018.Day18.Solution());
             }
         }
 
