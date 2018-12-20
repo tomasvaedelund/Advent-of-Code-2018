@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace AdventOfCode.Y2018.Day19
 {
@@ -33,16 +34,26 @@ namespace AdventOfCode.Y2018.Day19
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            return ($"result", timer.ElapsedMilliseconds);
+            var parsed = ParseInput(input);
+            var result = new int[] { 1, 0, 0, 0, 0, 0 };
+
+            //result = RunProgram(parsed.pointer, parsed.commands, result);
+
+            return ($"{result[0]}", timer.ElapsedMilliseconds);
         }
 
         public int[] RunProgram(int bound, IEnumerable<(string method, int[] instruction)> commands, int[] registry)
         {
             var pointer = 0;
+            var sb = new StringBuilder();
+            var counter = 0;
 
             while (true)
             {
-                if (pointer >= commands.Count())
+                sb.AppendLine($"{pointer} [{string.Join(", ", registry)}]");
+
+                counter++;
+                if (pointer >= commands.Count() || counter > int.MaxValue)
                 {
                     break;
                 }
@@ -55,6 +66,8 @@ namespace AdventOfCode.Y2018.Day19
 
                 pointer++;
             }
+
+            WriteRegistry(sb);
 
             return registry;
         }
@@ -87,6 +100,14 @@ namespace AdventOfCode.Y2018.Day19
             }
 
             return (pointer: pointer, commands: commands);
+        }
+
+        private void WriteRegistry(StringBuilder sb)
+        {
+            using (var sw = new StreamWriter(@"c:\temp\day19.txt", false))
+            {
+                sw.Write(sb.ToString());
+            }
         }
 
         private void WriteRegistry(int pointer, int[] registry)
