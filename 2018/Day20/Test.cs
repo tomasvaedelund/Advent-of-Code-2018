@@ -27,7 +27,7 @@ namespace AdventOfCode.Y2018.Day20
 
             sut.PrintMatrix(matrix);
 
-            var breakme = true;
+            //var breakme = true;
         }
     }
 }
