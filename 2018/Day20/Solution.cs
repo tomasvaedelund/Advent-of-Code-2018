@@ -23,7 +23,10 @@ namespace AdventOfCode.Y2018.Day20
         {
             var timer = Stopwatch.StartNew();
             var current = new Point() { X = 0, Y = 0, Type = 'X' };
-            //var matrix = GetAllPossiblePaths(input, new List<Point>() { current }, current);
+
+            var matrix = GetAllPossiblePaths(input, new List<Point>() { current }, current);
+
+            var result = CalculateMaxDistance(matrix);
 
             return ($"result", timer.ElapsedMilliseconds);
         }
@@ -112,7 +115,37 @@ namespace AdventOfCode.Y2018.Day20
                 }
             }
 
-            throw new Exception("Could not fing matching ending par...");
+            throw new Exception("Could not find matching ending par...");
+        }
+
+        public int CalculateMaxDistance(IEnumerable<Point> points)
+        {
+            var result = 0;
+            var start = points.Single(p => p.Type == 'X');
+            var matrix = GenerateMatrix(points);
+
+            var minX = points.Select(p => p.X).Min();
+            var minY = points.Select(p => p.Y).Min();
+
+            points = points.RecalculateXY(minX, minY);
+
+            foreach (var point in points.Where(p => p.Type == '.'))
+            {
+                var distance = CalculateDistance(start, point, matrix);
+                result = (distance > result) ? distance : result;
+            }
+
+            return result;
+        }
+
+        public int CalculateDistance(Point start, Point end, char[,] matrix)
+        {
+            var s = new Astar.Location() { X = start.X, Y = start.Y };
+            var e = new Astar.Location() { X = end.X, Y = end.Y };
+
+            var distance = Astar.GetDistance(s, e, matrix);
+
+            return distance;
         }
 
         public IEnumerable<string> Tokenizer(string input)
@@ -155,6 +188,53 @@ namespace AdventOfCode.Y2018.Day20
             return result;
         }
 
+        public char[,] GenerateMatrix(IEnumerable<Point> matrix)
+        {
+            var maxX = matrix.Select(p => p.X).Max();
+            var maxY = matrix.Select(p => p.Y).Max();
+            var minX = matrix.Select(p => p.X).Min();
+            var minY = matrix.Select(p => p.Y).Min();
+
+            var width = maxX - minX + 3;
+            var height = maxY - minY + 3;
+
+            var result = new char[height, width];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    var point = matrix.FirstOrDefault(p => p.X - minX + 1 == x && p.Y - minY + 1 == y);
+                    result[y, x] = point?.Type ?? '#';
+                }
+            }
+
+            return result;
+        }
+
+        public void PrintMatrix(char[,] matrix)
+        {
+            Console.Write(" ");
+
+            for (int x = 0; x < matrix.GetLength(1); x++)
+            {
+                Console.Write(x);
+            }
+
+            Console.WriteLine();
+
+            for (int y = 0; y < matrix.GetLength(0); y++)
+            {
+                Console.Write(y);
+                for (int x = 0; x < matrix.GetLength(1); x++)
+                {
+                    Console.Write(matrix[y, x]);
+                }
+
+                Console.WriteLine();
+            }
+        }
+
         public void PrintMatrix(IEnumerable<Point> matrix)
         {
             var maxX = matrix.Select(p => p.X).Max();
@@ -186,6 +266,16 @@ namespace AdventOfCode.Y2018.Day20
 
             return list;
         }
+
+        public static IEnumerable<Point> RecalculateXY(this IEnumerable<Point> points, int minX, int minY)
+        {
+            foreach (var point in points)
+            {
+                point.X = point.X - minX;
+                point.Y = point.Y - minY;
+                yield return point;
+            }
+        }
     }
 
     public class Point
@@ -193,6 +283,8 @@ namespace AdventOfCode.Y2018.Day20
         public int X { get; set; }
         public int Y { get; set; }
         public char Type { get; set; }
+
+        public int Distance { get; set; }
 
         public override bool Equals(object obj)
         {
