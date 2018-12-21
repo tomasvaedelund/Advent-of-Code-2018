@@ -33,9 +33,9 @@ namespace AdventOfCode
                 // Runner.Run(new AdventOfCode.Y2018.Day16.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day17.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day18.Solution());
-                // Runner.Run(new AdventOfCode.Y2018.Day19.Solution());
+                Runner.Run(new AdventOfCode.Y2018.Day19.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day20.Solution());
-                Runner.Run(new AdventOfCode.Y2018.Day21.Solution());
+                // Runner.Run(new AdventOfCode.Y2018.Day21.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day21.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day21.Solution());
                 // Runner.Run(new AdventOfCode.Y2018.Day21.Solution());

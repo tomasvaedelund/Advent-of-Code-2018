@@ -45,12 +45,12 @@ namespace AdventOfCode.Y2018.Day19
         public int[] RunProgram(int bound, IEnumerable<(string method, int[] instruction)> commands, int[] registry)
         {
             var pointer = 0;
-            var sb = new StringBuilder();
+            // var sb = new StringBuilder();
             var counter = 0;
 
             while (true)
             {
-                sb.AppendLine($"{pointer} [{string.Join(", ", registry)}]");
+                // sb.AppendLine($"{pointer} [{string.Join(", ", registry)}]");
 
                 counter++;
                 if (pointer >= commands.Count() || counter > int.MaxValue)
@@ -67,7 +67,7 @@ namespace AdventOfCode.Y2018.Day19
                 pointer++;
             }
 
-            WriteRegistry(sb);
+            // WriteRegistry(sb);
 
             return registry;
         }
@@ -76,7 +76,45 @@ namespace AdventOfCode.Y2018.Day19
         {
             var instruction = command.instruction;
             var method = command.method;
-            return typeof(SolutionExtensions).GetMethod(method).Invoke(null, new object[] { registry, instruction[0], instruction[1], instruction[2] }) as int[];
+            // return typeof(SolutionExtensions).GetMethod(method).Invoke(null, new object[] { registry, instruction[0], instruction[1], instruction[2] }) as int[];
+
+            switch (method)
+            {
+                case "addr":
+                    return registry.addr(instruction[0], instruction[1], instruction[2]);
+                case "addi":
+                    return registry.addi(instruction[0], instruction[1], instruction[2]);
+                case "mulr":
+                    return registry.mulr(instruction[0], instruction[1], instruction[2]);
+                case "muli":
+                    return registry.muli(instruction[0], instruction[1], instruction[2]);
+                case "banr":
+                    return registry.banr(instruction[0], instruction[1], instruction[2]);
+                case "bani":
+                    return registry.bani(instruction[0], instruction[1], instruction[2]);
+                case "borr":
+                    return registry.borr(instruction[0], instruction[1], instruction[2]);
+                case "bori":
+                    return registry.bori(instruction[0], instruction[1], instruction[2]);
+                case "setr":
+                    return registry.setr(instruction[0], instruction[1], instruction[2]);
+                case "seti":
+                    return registry.seti(instruction[0], instruction[1], instruction[2]);
+                case "gtir":
+                    return registry.gtir(instruction[0], instruction[1], instruction[2]);
+                case "gtri":
+                    return registry.gtri(instruction[0], instruction[1], instruction[2]);
+                case "gtrr":
+                    return registry.gtrr(instruction[0], instruction[1], instruction[2]);
+                case "eqir":
+                    return registry.eqir(instruction[0], instruction[1], instruction[2]);
+                case "eqri":
+                    return registry.eqri(instruction[0], instruction[1], instruction[2]);
+                case "eqrr":
+                    return registry.eqrr(instruction[0], instruction[1], instruction[2]);
+                default:
+                    throw new Exception($"Unknown method: '{command.method}'");
+            }
         }
 
         public (int pointer, IEnumerable<(string method, int[] instruction)> commands) ParseInput(string input)
@@ -121,97 +159,97 @@ namespace AdventOfCode.Y2018.Day19
 
     public static class SolutionExtensions
     {
-        public static int[] addr(int[] o, int a, int b, int c)
+        public static int[] addr(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] + o[b];
             return o;
         }
 
-        public static int[] addi(int[] o, int a, int b, int c)
+        public static int[] addi(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] + b;
             return o;
         }
 
-        public static int[] mulr(int[] o, int a, int b, int c)
+        public static int[] mulr(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] * o[b];
             return o;
         }
 
-        public static int[] muli(int[] o, int a, int b, int c)
+        public static int[] muli(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] * b;
             return o;
         }
 
-        public static int[] banr(int[] o, int a, int b, int c)
+        public static int[] banr(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] & o[b];
             return o;
         }
 
-        public static int[] bani(int[] o, int a, int b, int c)
+        public static int[] bani(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] & b;
             return o;
         }
 
-        public static int[] borr(int[] o, int a, int b, int c)
+        public static int[] borr(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] | o[b];
             return o;
         }
 
-        public static int[] bori(int[] o, int a, int b, int c)
+        public static int[] bori(this int[] o, int a, int b, int c)
         {
             o[c] = o[a] | b;
             return o;
         }
 
-        public static int[] setr(int[] o, int a, int b, int c)
+        public static int[] setr(this int[] o, int a, int b, int c)
         {
             o[c] = o[a];
             return o;
         }
 
-        public static int[] seti(int[] o, int a, int b, int c)
+        public static int[] seti(this int[] o, int a, int b, int c)
         {
             o[c] = a;
             return o;
         }
 
-        public static int[] gtir(int[] o, int a, int b, int c)
+        public static int[] gtir(this int[] o, int a, int b, int c)
         {
             o[c] = (a > o[b]) ? 1 : 0;
             return o;
         }
 
-        public static int[] gtri(int[] o, int a, int b, int c)
+        public static int[] gtri(this int[] o, int a, int b, int c)
         {
             o[c] = (o[a] > b) ? 1 : 0;
             return o;
         }
 
-        public static int[] gtrr(int[] o, int a, int b, int c)
+        public static int[] gtrr(this int[] o, int a, int b, int c)
         {
             o[c] = (o[a] > o[b]) ? 1 : 0;
             return o;
         }
 
-        public static int[] eqir(int[] o, int a, int b, int c)
+        public static int[] eqir(this int[] o, int a, int b, int c)
         {
             o[c] = (a == o[b]) ? 1 : 0;
             return o;
         }
 
-        public static int[] eqri(int[] o, int a, int b, int c)
+        public static int[] eqri(this int[] o, int a, int b, int c)
         {
             o[c] = (o[a] == b) ? 1 : 0;
             return o;
         }
 
-        public static int[] eqrr(int[] o, int a, int b, int c)
+        public static int[] eqrr(this int[] o, int a, int b, int c)
         {
             o[c] = (o[a] == o[b]) ? 1 : 0;
             return o;
