@@ -12,10 +12,10 @@ namespace AdventOfCode.Y2018.Day20
         {
             var sut = new Solution();
 
-            ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[0]);
-            ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[1]);
-            ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[2]);
-            ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[3]);
+            // ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[0]);
+            // ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[1]);
+            // ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[2]);
+            // ShouldGenerateCorrectMatrix(sut, input.Split("\r\n")[3]);
 
             ShouldCalculateCorrectMaxDistance(sut, "^WNE$", 3);
             ShouldCalculateCorrectMaxDistance(sut, "^ENWWW(NEEE|SSE(EE|N))$", 10);
@@ -23,6 +23,8 @@ namespace AdventOfCode.Y2018.Day20
             ShouldCalculateCorrectMaxDistance(sut, "^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$", 23);
             ShouldCalculateCorrectMaxDistance(sut, "^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$", 31);
 
+            // ShouldGenerateCorrectMatrix(sut, "^WNE$");
+            // ShouldCalculateCorrectMaxDistance(sut, "^WNE$", 3);
             Debug.Assert(true == true);
         }
 
@@ -31,7 +33,8 @@ namespace AdventOfCode.Y2018.Day20
             var current = new Point() { X = 0, Y = 0, Type = 'X' };
             var points = sut.GetAllPossiblePaths(input, new List<Point>() { current }, current);
 
-            var fact = sut.CalculateMaxDistance(points);
+            var fact = sut.CalculateMaxDoors(points);
+            var test = sut.CalculateMaxDistance(points);
 
             Debug.Assert(fact == expected);
         }

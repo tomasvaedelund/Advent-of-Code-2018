@@ -26,9 +26,9 @@ namespace AdventOfCode.Y2018.Day20
 
             var matrix = GetAllPossiblePaths(input, new List<Point>() { current }, current);
 
-            var result = CalculateMaxDistance(matrix);
+            var result = CalculateMaxDoors(matrix);
 
-            return ($"result", timer.ElapsedMilliseconds);
+            return ($"{result}", timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
@@ -50,13 +50,9 @@ namespace AdventOfCode.Y2018.Day20
                         var options = input.Substring(i + 1, last - 1 - i);
                         i = last;
                         var branches = Tokenizer(options);
-                        if (string.IsNullOrEmpty(branches.Last()))
-                        {
-                            // break;
-                        }
                         foreach (var branch in branches)
                         {
-                            points = points.Concat(GetAllPossiblePaths(branch, points, current));
+                            points = GetAllPossiblePaths(branch, points, current);
                         }
                         break;
                     case 'N':
@@ -118,6 +114,13 @@ namespace AdventOfCode.Y2018.Day20
             throw new Exception("Could not find matching ending par...");
         }
 
+        public int CalculateMaxDoors(IEnumerable<Point> points)
+        {
+            var result = CalculateMaxDistance(points);
+
+            return result / 2;
+        }
+
         public int CalculateMaxDistance(IEnumerable<Point> points)
         {
             var result = 0;
@@ -138,7 +141,7 @@ namespace AdventOfCode.Y2018.Day20
             return result;
         }
 
-        public int CalculateDistance(Point start, Point end, char[,] matrix)
+        private int CalculateDistance(Point start, Point end, char[,] matrix)
         {
             var s = new Astar.Location() { X = start.X, Y = start.Y };
             var e = new Astar.Location() { X = end.X, Y = end.Y };
@@ -188,12 +191,12 @@ namespace AdventOfCode.Y2018.Day20
             return result;
         }
 
-        public char[,] GenerateMatrix(IEnumerable<Point> matrix)
+        public char[,] GenerateMatrix(IEnumerable<Point> points)
         {
-            var maxX = matrix.Select(p => p.X).Max();
-            var maxY = matrix.Select(p => p.Y).Max();
-            var minX = matrix.Select(p => p.X).Min();
-            var minY = matrix.Select(p => p.Y).Min();
+            var maxX = points.Select(p => p.X).Max();
+            var maxY = points.Select(p => p.Y).Max();
+            var minX = points.Select(p => p.X).Min();
+            var minY = points.Select(p => p.Y).Min();
 
             var width = maxX - minX + 3;
             var height = maxY - minY + 3;
@@ -204,7 +207,7 @@ namespace AdventOfCode.Y2018.Day20
             {
                 for (int x = 0; x < width; x++)
                 {
-                    var point = matrix.FirstOrDefault(p => p.X - minX + 1 == x && p.Y - minY + 1 == y);
+                    var point = points.FirstOrDefault(p => p.X - minX + 1 == x && p.Y - minY + 1 == y);
                     result[y, x] = point?.Type ?? '#';
                 }
             }
@@ -235,18 +238,18 @@ namespace AdventOfCode.Y2018.Day20
             }
         }
 
-        public void PrintMatrix(IEnumerable<Point> matrix)
+        public void PrintMatrix(IEnumerable<Point> points)
         {
-            var maxX = matrix.Select(p => p.X).Max();
-            var maxY = matrix.Select(p => p.Y).Max();
-            var minX = matrix.Select(p => p.X).Min();
-            var minY = matrix.Select(p => p.Y).Min();
+            var maxX = points.Select(p => p.X).Max();
+            var maxY = points.Select(p => p.Y).Max();
+            var minX = points.Select(p => p.X).Min();
+            var minY = points.Select(p => p.Y).Min();
 
             for (int y = minY - 1; y < maxY + 2; y++)
             {
                 for (int x = minX - 1; x < maxX + 2; x++)
                 {
-                    var point = matrix.FirstOrDefault(p => p.X == x && p.Y == y);
+                    var point = points.FirstOrDefault(p => p.X == x && p.Y == y);
                     Console.Write(point?.Type ?? '#');
                 }
 
@@ -257,7 +260,7 @@ namespace AdventOfCode.Y2018.Day20
 
     public static class SolutionExtensions
     {
-        public static IEnumerable<T> Add<T>(this IEnumerable<T> list, T item)
+        public static IEnumerable<Point> Add(this IEnumerable<Point> list, Point item)
         {
             if (!list.Contains(item))
             {
@@ -271,8 +274,8 @@ namespace AdventOfCode.Y2018.Day20
         {
             foreach (var point in points)
             {
-                point.X = point.X - minX;
-                point.Y = point.Y - minY;
+                point.X = point.X - minX + 1;
+                point.Y = point.Y - minY + 1;
                 yield return point;
             }
         }
