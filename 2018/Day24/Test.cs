@@ -20,7 +20,11 @@ namespace AdventOfCode.Y2018.Day24
 
         private void ShouldSelectCorrectTargets(Solution sut, IEnumerable<Unit> units)
         {
-            var test = sut.TargetSelectionPhase(units);
+            while (units.Select(u => u.UnitType).Distinct().Count() > 1)
+            {
+                var attacks = sut.TargetSelectionPhase(units);
+                units = sut.AttackingPhase(attacks);
+            }
 
             Debug.Assert(true == true);
         }

@@ -33,32 +33,51 @@ namespace AdventOfCode.Y2018.Day24
 
         public IEnumerable<(Unit attacker, Unit defender)> TargetSelectionPhase(IEnumerable<Unit> units)
         {
-            units = units.OrderByDescending(u => u.EffectivePower).ThenBy(u => u.Initiative);
+            units = units
+                .OrderByDescending(u => u.EffectivePower)
+                .ThenBy(u => u.Initiative);
 
-            foreach (var unit in units)
+            var result = new List<(Unit attacker, Unit defender)>();
+
+            foreach (var attacker in units)
             {
                 var targets = units
-                    .Where(u => u != unit)
-                    .Where(u => u.UnitType != unit.UnitType)
-                    .Where(u => !u.Immunities.Contains(unit.AttackType));
+                    .Where(t => t != attacker)
+                    .Where(t => t.UnitType != attacker.UnitType)
+                    .Where(t => !t.Immunities.Contains(attacker.AttackType))
+                    .OrderByDescending(t => EffectiveDamage(attacker, t))
+                    .ThenByDescending(t => t.EffectivePower)
+                    .ThenByDescending(t => t.Initiative);
 
-                if (!targets.Any())
+                foreach (var target in targets)
                 {
-                    continue;
+                    if (!result.Any(r => r.attacker == attacker) && !result.Any(r => r.defender == target))
+                    {
+                        result.Add((attacker: attacker, defender: target));
+                    }
                 }
-
-                var target = targets
-                    .OrderBy(t => EffectiveDamage(unit, t))
-                    .ThenBy(t => t.Initiative)
-                    .First();
-
-                yield return (attacker: unit, defender: target);
             }
+
+            return result.OrderByDescending(r => r.attacker.Initiative);
         }
 
-        private int EffectiveDamage(Unit unit, Unit t)
+        public IEnumerable<Unit> AttackingPhase(IEnumerable<(Unit attacker, Unit defender)> attacks)
         {
-            return (t.Weaknesses.Contains(unit.AttackType)) ? unit.EffectivePower * 2 : unit.EffectivePower;
+
+            foreach (var attack in attacks)
+            {
+                var damage = EffectiveDamage(attack.attacker, attack.defender);
+                var unitsLost = damage / attack.defender.HitPoints;
+
+                attack.defender.Count -= unitsLost;
+            }
+
+            return attacks.Select(a => a.defender).Where(d => d.Count > 0);
+        }
+
+        private int EffectiveDamage(Unit attacker, Unit target)
+        {
+            return (target.Weaknesses.Contains(attacker.AttackType)) ? attacker.EffectivePower * 2 : attacker.EffectivePower;
         }
 
         public IEnumerable<Unit> ParseInput(string input)
