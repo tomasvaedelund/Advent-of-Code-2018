@@ -13,20 +13,16 @@ namespace AdventOfCode.Y2018.Day24
             var sut = new Solution();
             var parsed = sut.ParseInput(input);
 
-            ShouldSelectCorrectTargets(sut, parsed);
+            ShouldSelectCorrectTargets(sut, parsed, 5216);
 
             Debug.Assert(true == true);
         }
 
-        private void ShouldSelectCorrectTargets(Solution sut, IEnumerable<Unit> units)
+        private void ShouldSelectCorrectTargets(Solution sut, IEnumerable<Unit> units, int expected)
         {
-            while (units.Select(u => u.UnitType).Distinct().Count() > 1)
-            {
-                var attacks = sut.TargetSelectionPhase(units);
-                units = sut.AttackingPhase(attacks);
-            }
+            var fact = sut.Solver(units);
 
-            Debug.Assert(true == true);
+            Debug.Assert(fact == expected);
         }
     }
 }

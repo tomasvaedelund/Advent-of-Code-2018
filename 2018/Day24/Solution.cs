@@ -31,48 +31,67 @@ namespace AdventOfCode.Y2018.Day24
             return ($"result", timer.ElapsedMilliseconds);
         }
 
-        public IEnumerable<(Unit attacker, Unit defender)> TargetSelectionPhase(IEnumerable<Unit> units)
+        public int Solver(IEnumerable<Unit> units)
         {
-            units = units
-                .OrderByDescending(u => u.EffectivePower)
-                .ThenBy(u => u.Initiative);
-
-            var result = new List<(Unit attacker, Unit defender)>();
-
-            foreach (var attacker in units)
+            var hasAttackBeenDone = true;
+            while (hasAttackBeenDone)
             {
-                var targets = units
-                    .Where(t => t != attacker)
-                    .Where(t => t.UnitType != attacker.UnitType)
-                    .Where(t => !t.Immunities.Contains(attacker.AttackType))
-                    .OrderByDescending(t => EffectiveDamage(attacker, t))
-                    .ThenByDescending(t => t.EffectivePower)
-                    .ThenByDescending(t => t.Initiative);
+                hasAttackBeenDone = false;
 
-                foreach (var target in targets)
+                var attacks = new List<(Unit attacker, Unit defender, int power)>();
+                foreach (var attacker in units.OrderByDescending(a => (a.EffectivePower, a.Initiative)))
                 {
-                    if (!result.Any(r => r.attacker == attacker) && !result.Any(r => r.defender == target))
+                    var defenders = units
+                        .Where(d => attacker.EffectiveDamage(d) > 0)
+                        .OrderByDescending(d => attacker.EffectiveDamage(d))
+                        .ThenByDescending(d => d.EffectivePower)
+                        .ThenByDescending(d => d.Initiative);
+
+                    if (!defenders.Any())
                     {
-                        result.Add((attacker: attacker, defender: target));
+                        continue;
+                    }
+
+                    foreach (var defender in defenders)
+                    {
+                        if (attacks.Any(a => a.attacker == attacker || a.defender == defender))
+                        {
+                            continue;
+                        }
+
+                        attacks.Add((attacker: attacker, defender: defender, power: attacker.EffectiveDamage(defender)));
+                        hasAttackBeenDone = true;
                     }
                 }
+
+                attacks = attacks.OrderByDescending(a => a.attacker.Initiative).ToList();
+
+                foreach (var attack in attacks)
+                {
+                    var unitsLost = attack.power / attack.defender.HitPoints;
+
+                    foreach (var attackB in attacks)
+                    {
+                        if (attackB.defender.Equals(attack.defender))
+                        {
+                            attackB.defender.Count -= unitsLost;
+                            continue;
+                        }
+
+                        if (attackB.attacker.Equals(attack.defender))
+                        {
+                            attackB.attacker.Count -= unitsLost;
+                        }
+                    }
+
+                    units.Where(u => u.Equals(attack.defender)).Single().Count -= unitsLost;
+                }
+
+                units = units.Where(u => u.Count > 0);
             }
 
-            return result.OrderByDescending(r => r.attacker.Initiative);
-        }
 
-        public IEnumerable<Unit> AttackingPhase(IEnumerable<(Unit attacker, Unit defender)> attacks)
-        {
-
-            foreach (var attack in attacks)
-            {
-                var damage = EffectiveDamage(attack.attacker, attack.defender);
-                var unitsLost = damage / attack.defender.HitPoints;
-
-                attack.defender.Count -= unitsLost;
-            }
-
-            return attacks.Select(a => a.defender).Where(d => d.Count > 0);
+            return 0;
         }
 
         private int EffectiveDamage(Unit attacker, Unit target)
@@ -143,5 +162,41 @@ namespace AdventOfCode.Y2018.Day24
         public string[] Immunities { get; set; }
 
         public int EffectivePower => Count * AttackDamage;
+
+        public int EffectiveDamage(Unit defender)
+        {
+            if (defender.UnitType == UnitType)
+            {
+                return 0;
+            }
+
+            if (defender.Immunities.Contains(AttackType))
+            {
+                return 0;
+            }
+
+            if (defender.Weaknesses.Contains(AttackType))
+            {
+                return EffectivePower * 2;
+            }
+
+            return EffectivePower;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var other = obj as Unit;
+            return other.HitPoints == HitPoints && other.Initiative == Initiative;
+        }
+
+        public override int GetHashCode()
+        {
+            return (HitPoints.GetHashCode() ^ Initiative.GetHashCode()).GetHashCode();
+        }
     }
 }
