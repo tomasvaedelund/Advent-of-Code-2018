@@ -33,12 +33,14 @@ namespace AdventOfCode.Y2018.Day24
 
         public int Solver(IEnumerable<Unit> units)
         {
+            units = units.ToList();
+
             var hasAttackBeenDone = true;
             while (hasAttackBeenDone)
             {
                 hasAttackBeenDone = false;
 
-                var attacks = new List<(Unit attacker, Unit defender, int power)>();
+                var attacks = new List<(Unit attacker, Unit defender)>();
                 foreach (var attacker in units.OrderByDescending(a => (a.EffectivePower, a.Initiative)))
                 {
                     var defenders = units
@@ -59,7 +61,7 @@ namespace AdventOfCode.Y2018.Day24
                             continue;
                         }
 
-                        attacks.Add((attacker: attacker, defender: defender, power: attacker.EffectiveDamage(defender)));
+                        attacks.Add((attacker: attacker, defender: defender));
                         hasAttackBeenDone = true;
                     }
                 }
@@ -68,35 +70,27 @@ namespace AdventOfCode.Y2018.Day24
 
                 foreach (var attack in attacks)
                 {
-                    var unitsLost = attack.power / attack.defender.HitPoints;
+                    var unitsLost = attack.attacker.EffectiveDamage(attack.defender) / attack.defender.HitPoints;
 
                     foreach (var attackB in attacks)
                     {
                         if (attackB.defender.Equals(attack.defender))
                         {
                             attackB.defender.Count -= unitsLost;
-                            continue;
                         }
-
-                        if (attackB.attacker.Equals(attack.defender))
+                        else if (attackB.attacker.Equals(attack.defender))
                         {
                             attackB.attacker.Count -= unitsLost;
                         }
                     }
 
-                    units.Where(u => u.Equals(attack.defender)).Single().Count -= unitsLost;
+                    units.Where(u => u.Equals(attack.defender)).ToList().ForEach(u => u.Count -= unitsLost);
                 }
 
                 units = units.Where(u => u.Count > 0);
             }
 
-
-            return 0;
-        }
-
-        private int EffectiveDamage(Unit attacker, Unit target)
-        {
-            return (target.Weaknesses.Contains(attacker.AttackType)) ? attacker.EffectivePower * 2 : attacker.EffectivePower;
+            return units.Select(u => u.Count).Sum();
         }
 
         public IEnumerable<Unit> ParseInput(string input)
