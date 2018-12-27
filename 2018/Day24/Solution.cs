@@ -22,7 +22,11 @@ namespace AdventOfCode.Y2018.Day24
         public (string result, long time) PartOne(string input)
         {
             var timer = Stopwatch.StartNew();
-            return ($"result", timer.ElapsedMilliseconds);
+            var parsed = ParseInput(input);
+            var result = Solver(parsed);
+
+            // 22155 >
+            return ($"{result}", timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
@@ -70,21 +74,10 @@ namespace AdventOfCode.Y2018.Day24
 
                 foreach (var attack in attacks)
                 {
-                    var unitsLost = attack.attacker.EffectiveDamage(attack.defender) / attack.defender.HitPoints;
+                    var effectiveDamage = attack.attacker.EffectiveDamage(attack.defender);
+                    var unitsLeft = attack.defender.Count - effectiveDamage / attack.defender.HitPoints;
 
-                    foreach (var attackB in attacks)
-                    {
-                        if (attackB.defender.Equals(attack.defender))
-                        {
-                            attackB.defender.Count -= unitsLost;
-                        }
-                        else if (attackB.attacker.Equals(attack.defender))
-                        {
-                            attackB.attacker.Count -= unitsLost;
-                        }
-                    }
-
-                    units.Where(u => u.Equals(attack.defender)).ToList().ForEach(u => u.Count -= unitsLost);
+                    units.Where(u => u.Equals(attack.defender)).ToList().ForEach(u => u.Count = unitsLeft);
                 }
 
                 units = units.Where(u => u.Count > 0);
