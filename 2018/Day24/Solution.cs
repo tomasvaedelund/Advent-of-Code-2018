@@ -59,14 +59,8 @@ namespace AdventOfCode.Y2018.Day24
                             .OrderByDescending(d => (d.EffectivePower, d.Initiative))
                             .First();
 
-                        var effectiveDamage = attacker.EffectiveDamage(defender);
-                        var unitsLost = effectiveDamage / defender.HitPoints;
-
-                        if (unitsLost > 0)
-                        {
-                            attacks.Add(attacker, defender);
-                            defenders.Remove(defender);
-                        }
+                        attacks.Add(attacker, defender);
+                        defenders.Remove(defender);
                     }
                 }
 
@@ -125,11 +119,22 @@ namespace AdventOfCode.Y2018.Day24
                 var attackPattern = new Regex(@"(?<=(does )).+(?= damage)");
                 var attack = attackPattern.Match(row).Value.Split(' ')[1];
 
-                var weaknessPattern = new Regex(@"(?<=weak to ).*(?=\))");
-                var weaknesses = weaknessPattern.Match(row).Value.Trim().Split(", ", StringSplitOptions.RemoveEmptyEntries);
+                var specialsPattern = new Regex(@"\(.+\)");
+                var specials = specialsPattern.Match(row).Value.Split(';');
 
-                var immunityPattern = new Regex(@"(?<=immune to ).*(?=\))");
-                var immunities = immunityPattern.Match(row).Value.Split("; ")[0].Split(", ", StringSplitOptions.RemoveEmptyEntries);
+                var weaknesses = new string[0];
+                var immunities = new string[0];
+                foreach (var special in specials)
+                {
+                    if (special.IndexOf("weak to") >= 0)
+                    {
+                        weaknesses = special.Replace("weak to", "").Replace("(", "").Replace(")", "").Split(',').Select(x => x.Trim()).ToArray();
+                    }
+                    else if (special.IndexOf("immune to") >= 0)
+                    {
+                        immunities = special.Replace("immune to", "").Replace("(", "").Replace(")", "").Split(',').Select(x => x.Trim()).ToArray();
+                    }
+                }
 
                 yield return new Unit()
                 {
