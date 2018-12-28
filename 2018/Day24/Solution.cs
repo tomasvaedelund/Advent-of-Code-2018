@@ -26,6 +26,8 @@ namespace AdventOfCode.Y2018.Day24
             var result = Solver(parsed);
 
             // 22155 >
+            // 22153 >
+            // 22056 <
             return ($"{result}", timer.ElapsedMilliseconds);
         }
 
@@ -44,46 +46,53 @@ namespace AdventOfCode.Y2018.Day24
             {
                 hasAttackBeenDone = false;
 
-                var attacks = new List<(Unit attacker, Unit defender)>();
+                var defenders = new HashSet<Unit>(units);
+                var attacks = new Dictionary<Unit, Unit>();
                 foreach (var attacker in units.OrderByDescending(a => (a.EffectivePower, a.Initiative)))
                 {
-                    var defenders = units
-                        .Where(d => attacker.EffectiveDamage(d) > 0)
-                        .OrderByDescending(d => attacker.EffectiveDamage(d))
-                        .ThenByDescending(d => d.EffectivePower)
-                        .ThenByDescending(d => d.Initiative);
+                    var maxDamage = defenders.Select(d => attacker.EffectiveDamage(d)).Max();
 
-                    if (!defenders.Any())
+                    if (maxDamage > 0)
                     {
-                        continue;
-                    }
+                        var defender = defenders
+                            .Where(d => attacker.EffectiveDamage(d) == maxDamage)
+                            .OrderByDescending(d => (d.EffectivePower, d.Initiative))
+                            .First();
 
-                    foreach (var defender in defenders)
-                    {
-                        if (attacks.Any(a => a.attacker == attacker || a.defender == defender))
+                        var effectiveDamage = attacker.EffectiveDamage(defender);
+                        var unitsLost = effectiveDamage / defender.HitPoints;
+
+                        if (unitsLost > 0)
                         {
-                            continue;
+                            attacks.Add(attacker, defender);
+                            defenders.Remove(defender);
                         }
-
-                        attacks.Add((attacker: attacker, defender: defender));
-                        hasAttackBeenDone = true;
                     }
                 }
 
-                attacks = attacks.OrderByDescending(a => a.attacker.Initiative).ToList();
-
-                foreach (var attack in attacks)
+                foreach (var attacker in attacks.Keys.OrderByDescending(a => a.Initiative))
                 {
-                    var effectiveDamage = attack.attacker.EffectiveDamage(attack.defender);
-                    var unitsLeft = attack.defender.Count - effectiveDamage / attack.defender.HitPoints;
+                    if (attacker.Units > 0)
+                    {
+                        var defender = attacks[attacker];
+                        var effectiveDamage = attacker.EffectiveDamage(defender);
 
-                    units.Where(u => u.Equals(attack.defender)).ToList().ForEach(u => u.Count = unitsLeft);
+                        if (effectiveDamage > 0 && defender.Units > 0)
+                        {
+                            var unitsLost = effectiveDamage / defender.HitPoints;
+                            defender.Units = Math.Max(0, defender.Units - unitsLost);
+                            if (unitsLost > 0)
+                            {
+                                hasAttackBeenDone = true;
+                            }
+                        }
+                    }
                 }
 
-                units = units.Where(u => u.Count > 0);
+                units = units.Where(u => u.Units > 0).ToList();
             }
 
-            return units.Select(u => u.Count).Sum();
+            return units.Select(u => u.Units).Sum();
         }
 
         public IEnumerable<Unit> ParseInput(string input)
@@ -124,14 +133,14 @@ namespace AdventOfCode.Y2018.Day24
 
                 yield return new Unit()
                 {
-                    Count = numbers[0],
+                    Units = numbers[0],
                     UnitType = unitType,
                     HitPoints = numbers[1],
                     AttackDamage = numbers[2],
                     AttackType = attack,
                     Initiative = numbers[3],
-                    Weaknesses = weaknesses,
-                    Immunities = immunities
+                    Weaknesses = weaknesses.ToHashSet(),
+                    Immunities = immunities.ToHashSet()
                 };
             }
         }
@@ -139,16 +148,16 @@ namespace AdventOfCode.Y2018.Day24
 
     public class Unit
     {
-        public int Count { get; set; }
+        public int Units { get; set; }
         public int AttackDamage { get; set; }
         public int HitPoints { get; set; }
         public int Initiative { get; set; }
         public char UnitType { get; set; }
         public string AttackType { get; set; }
-        public string[] Weaknesses { get; set; }
-        public string[] Immunities { get; set; }
+        public HashSet<string> Weaknesses { get; set; } = new HashSet<string>();
+        public HashSet<string> Immunities { get; set; } = new HashSet<string>();
 
-        public int EffectivePower => Count * AttackDamage;
+        public int EffectivePower => Units * AttackDamage;
 
         public int EffectiveDamage(Unit defender)
         {
@@ -170,20 +179,9 @@ namespace AdventOfCode.Y2018.Day24
             return EffectivePower;
         }
 
-        public override bool Equals(object obj)
+        public override string ToString()
         {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            var other = obj as Unit;
-            return other.HitPoints == HitPoints && other.Initiative == Initiative;
-        }
-
-        public override int GetHashCode()
-        {
-            return (HitPoints.GetHashCode() ^ Initiative.GetHashCode()).GetHashCode();
+            return $"HP: {HitPoints}, D: {AttackDamage}, U: {Units}, I: {Initiative}";
         }
     }
 }
