@@ -23,14 +23,10 @@ namespace AdventOfCode.Y2018.Day20
 
         private void ShouldCalculateCorrectMaxDistance(Solution sut, string input, int expected)
         {
-            var test = sut.GenerateRoomsAndDoors(input);
-            // var current = new Point() { X = 0, Y = 0, Type = 'X' };
-            // var points = sut.GetAllPossiblePaths(input, new List<Point>() { current }, current);
+            var test = sut.GenerateDoors(input);
+            var fact = test.Select(x => x.to.d).Max();
 
-            // var fact = sut.CalculateMaxDoors(points);
-            // var test = sut.CalculateMaxDistance(points);
-
-            // Debug.Assert(fact == expected);
+            Debug.Assert(fact == expected);
         }
     }
 }
