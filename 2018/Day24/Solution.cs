@@ -23,23 +23,40 @@ namespace AdventOfCode.Y2018.Day24
         {
             var timer = Stopwatch.StartNew();
             var parsed = ParseInput(input);
-            var result = Solver(parsed);
+            var result = Solver(parsed).units;
 
-            // 22155 >
-            // 22153 >
-            // 22056 <
             return ($"{result}", timer.ElapsedMilliseconds);
         }
 
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            return ($"result", timer.ElapsedMilliseconds);
+            var parsed = ParseInput(input);
+            var boost = 0;
+            var result = (immuneSystemWon: false, units: 0);
+
+            while (true)
+            {
+                boost++;
+                result = Solver(parsed, boost);
+
+                if (result.immuneSystemWon)
+                {
+                    break;
+                }
+            }
+
+            return ($"{result.units}", timer.ElapsedMilliseconds);
         }
 
-        public int Solver(IEnumerable<Unit> units)
+        public (bool immuneSystemWon, int units) Solver(IEnumerable<Unit> units, int boost = 0)
         {
             units = units.ToList();
+
+            foreach (var unit in units)
+            {
+                unit.AttackDamage += (unit.UnitType == 's') ? boost : 0;
+            }
 
             var hasAttackBeenDone = true;
             while (hasAttackBeenDone)
@@ -86,7 +103,7 @@ namespace AdventOfCode.Y2018.Day24
                 units = units.Where(u => u.Units > 0).ToList();
             }
 
-            return units.Select(u => u.Units).Sum();
+            return (immuneSystemWon: !units.Any(u => u.UnitType == 'i'), units: units.Select(u => u.Units).Sum());
         }
 
         public IEnumerable<Unit> ParseInput(string input)
