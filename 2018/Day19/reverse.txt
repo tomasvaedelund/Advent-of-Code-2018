@@ -1,0 +1,73 @@
+#ip 3
+
+START: 0 0 0 0 0 0
+
+00: addi 3 16 3     GOTO : r[3] = r[3] + 16
+01: seti 1 8 4      SET: r[4] = r[1]
+02: seti 1 4 5      SET: r[5] = r[1]
+
+BETWEEN 03 AND 15 IS WHERE THE ACTION IS
+r[2] IS THE KEY
+
+// 03 -> 06 => break statement??
+03: mulr 4 5 1      SET: r[1] = r[4] * r[5]
+04: eqrr 1 2 1      SET: r[1] = (r[1] == r[2]) ? 1 : 0	// THIS CHECKS IF r[4] * r[5] == r[2]
+05: addr 1 3 3      GOTO : r[3] = r[1] + r[3]           // JUMP 1
+06: addi 3 1 3      GOTO : r[3] = r[3] + 1              // JUMP 2
+
+// 07 => THIS IS THE VALUE AT THE END??
+07: addr 4 0 0      SET: r[0] = r[4] + r[5]
+
+// 08 -> 11 => while loop, outer loop??
+08: addi 5 1 5      SET: r[5] = r[5] + 1
+09: gtrr 5 2 1      SET: r[1] = (r[5] > r[2]) ? 1 : 0	// CHECKS THAT r[5] < r[2]
+10: addr 3 1 3      GOTO : r[3] = r[3] + r[1]           // JUMP 3 - THIS JUMP BREAKS THE LOOP
+11: seti 2 1 3     #GOTO 2: r[3] = 3                    // JUMP #4 = LOOP BACK TO 3
+
+// 12 -> 15 => while loop, inner loop??
+12: addi 4 1 4      SET: r[4] = r[4] + 1
+13: gtrr 4 2 1      SET: r[1] = (r[4] > r[2]) ? 1 : 0	// THIS CHECKS THAT r[4] < r[2]
+14: addr 1 3 3      GOTO : r[3] = r[1] + r[3]           // JUMP 1? (or 4)
+15: seti 1 3 3     #GOTO 1: r[3] = 2                    // JUMP #4 = LOOP BACK TO 3
+
+// START
+r[0] = 0
+r[1] = 0
+r[2] = 10551319 (DOES NOT CHANGE HERE)
+r[3] = 2
+r[4] = 1
+r[5] = 2
+
+// 08 -> 11 => while loop, outer loop??
+for r[5] = 2; r[5] <= r[2]; r[5]++
+	// 12 -> 15 => while loop, inner loop??
+	for r[4] = 2; r[4] <= r[2]; r[4]++
+		// 03 -> 06 => break statement??
+		if r[4] * r[5] == r[2]
+			// 07 => THIS IS THE VALUE AT THE END??
+			r[0] = r[4] + r[5]
+
+It checks if result of multiplying two numbers is r2 and then adds the result to be returned
+
+It checks which numbers between 1 and r2 that r2 are evenly divisable by and sums them up in r0
+
+16: mulr 3 3 3      GOTO 16: r[3] = r[3] * r[3]
+17: addi 2 2 2      SET: r[2] = r[2] + 2
+18: mulr 2 2 2      SET:
+19: mulr 3 2 2      SET:
+20: muli 2 11 2     SET:
+21: addi 1 3 1      SET:
+22: mulr 1 3 1      SET:
+23: addi 1 17 1     SET:
+24: addr 2 1 2      SET:
+25: addr 3 0 3      GOTO 27: r[3] = r[3] + r[0]
+26: seti 0 3 3     #GOTO : r[3] = 1
+27: setr 3 0 1      SET:
+28: mulr 1 3 1      SET:
+29: addr 3 1 1      SET:
+30: mulr 3 1 1      SET:
+31: muli 1 14 1     SET:
+32: mulr 1 3 1      SET:
+33: addr 2 1 2      SET:
+34: seti 0 8 0      SET: r[0] = 0
+35: seti 0 9 3     #GOTO: r[3] = 1

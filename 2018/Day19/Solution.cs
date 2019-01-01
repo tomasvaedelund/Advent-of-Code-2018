@@ -34,26 +34,40 @@ namespace AdventOfCode.Y2018.Day19
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            var parsed = ParseInput(input);
-            var result = new int[] { 1, 0, 0, 0, 0, 0 };
 
-            //result = RunProgram(parsed.pointer, parsed.commands, result);
+            // Get r2 by running the ElfCode and see what's in r2 after initialization phase
+            var r2 = 10551319;
+            var r0 = 1;
 
-            return ($"{result[0]}", timer.ElapsedMilliseconds);
+            // This is r5
+            for (int r5 = 2; r5 <= r2; r5++)
+            {
+                // Skipping r4 since we only need to check if r2 is evenly divisable by r5
+                // Otherwise we would need to check if r4 * r5 == r2, for all r4s...
+                if (r2 % r5 == 0)
+                {
+                    r0 += r5;
+                }
+            }
+
+            var result = r0;
+
+            return ($"{result}", timer.ElapsedMilliseconds);
         }
 
         public int[] RunProgram(int bound, IEnumerable<(string method, int[] instruction)> commands, int[] registry)
         {
             var pointer = 0;
-            // var sb = new StringBuilder();
+            //var sb = new StringBuilder();
             var counter = 0;
+            var max = int.MaxValue;
 
             while (true)
             {
-                // sb.AppendLine($"{pointer} [{string.Join(", ", registry)}]");
+                //sb.Append($"{pointer} [{string.Join(", ", registry)}]");
 
                 counter++;
-                if (pointer >= commands.Count() || counter > int.MaxValue)
+                if (pointer >= commands.Count() || counter > max)
                 {
                     break;
                 }
@@ -65,9 +79,11 @@ namespace AdventOfCode.Y2018.Day19
                 pointer = registry[bound];
 
                 pointer++;
+
+                //sb.AppendLine($" => {pointer} [{string.Join(", ", registry)}]");
             }
 
-            // WriteRegistry(sb);
+            //WriteRegistry(sb);
 
             return registry;
         }
@@ -76,7 +92,6 @@ namespace AdventOfCode.Y2018.Day19
         {
             var instruction = command.instruction;
             var method = command.method;
-            // return typeof(SolutionExtensions).GetMethod(method).Invoke(null, new object[] { registry, instruction[0], instruction[1], instruction[2] }) as int[];
 
             switch (method)
             {
@@ -145,14 +160,6 @@ namespace AdventOfCode.Y2018.Day19
             using (var sw = new StreamWriter(@"c:\temp\day19.txt", false))
             {
                 sw.Write(sb.ToString());
-            }
-        }
-
-        private void WriteRegistry(int pointer, int[] registry)
-        {
-            using (var sw = new StreamWriter(@"c:\temp\day19.txt", true))
-            {
-                sw.WriteLine($"ip={pointer} [{string.Join(", ", registry)}]");
             }
         }
     }
