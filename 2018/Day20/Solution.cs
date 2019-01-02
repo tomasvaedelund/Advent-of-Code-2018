@@ -31,7 +31,21 @@ namespace AdventOfCode.Y2018.Day20
         public (string result, long time) PartTwo(string input)
         {
             var timer = Stopwatch.StartNew();
-            return ($"result", timer.ElapsedMilliseconds);
+            var doors = GenerateDoors(input);
+            var result = doors.Select(x => x.from.d).Where(x => x >= 1000).Count();
+
+            // 9471 >
+            // 9332 >
+            // 9284 ?
+            // 9288 ?
+            return ($"{result - diff}", timer.ElapsedMilliseconds);
+        }
+
+        public int Solver(string input)
+        {
+            var doors = GenerateDoors(input);
+
+            return 0;
         }
 
         public IEnumerable<((int x, int y, int d) from, (int x, int y, int d) to)> GenerateDoors(string input)
@@ -76,17 +90,31 @@ namespace AdventOfCode.Y2018.Day20
             return result;
         }
 
+        int diff = 0;
         private List<((int x, int y, int d) from, (int x, int y, int d) to)> GetLastNext((int x, int y, int d) last, (int x, int y, int d) next, List<((int x, int y, int d) from, (int x, int y, int d) to)> result)
         {
             var existingFroms = result.Where(r => r.from.x == next.x && r.from.y == next.y);
             if (existingFroms.Any())
             {
                 var minD = Math.Min(next.d, existingFroms.Select(e => e.from.d).Min());
+
+                if (next.d >= 1000 && minD < 1000)
+                {
+                    diff += (next.d > minD) ? next.d - minD : minD - next.d;
+                }
+
                 next.d = minD;
+                last.d = minD - 1;
 
                 existingFroms.ToList().ForEach(existing =>
                 {
-                    existing.from.d = minD;
+                    if (existing.from.d >= 1000 && minD < 1000)
+                    {
+                        diff += (existing.from.d > minD) ? existing.from.d - minD : minD - existing.from.d;
+                    }
+
+                    existing.to.d = minD;
+                    existing.from.d = minD - 1;
                 });
             }
 
